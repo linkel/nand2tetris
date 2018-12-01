@@ -53,5 +53,12 @@ CHIP ALU {
    Add16(a=nxres, b=nyres, out=xplusy);
    Mux16(a=xandy, b=xplusy, sel=f, out=fres);
    Not16(in=fres, out=notfres);
-   Mux16(a=fres, b=notfres, sel=no, out=out);
+   // 2's complement, most significant bit is 0 for positive and 1 for negative numbers
+   Mux16(a=fres, b=notfres, sel=no, out[15]=ng, out[0..7]=p1, out[8..15]=p2, out=out);
+   // if any digit is 1, the result of the Or will be 1, so we use a not so we get a 0 for zr
+   // if all digits are 0, the result of the Or will be 0, so the not gives us a 1 for zr
+   Or8Way(in=p1, out=or1);
+   Or8Way(in=p2, out=or2);
+   Or(a=or1, b=or2, out=orout);
+   Not(in=orout, out=zr);
 }
