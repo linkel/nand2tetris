@@ -16,5 +16,25 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    /**
+     * My original mishap--failing to think about how it needs to continously increment if inc is on,
+     * not having a good concept of the tick tock clock t+1 sequential chip
+     * Inc16(in=in, out=incOut);
+     * Mux16(a=in, b=incOut, sel=inc, out=x);
+     * Register(in=x, load=load, out=y);
+     * Mux16(a=y, b=false, sel=reset, out=out);
+     */
+
+     Inc16(in=back, out=p1);
+
+     // Note that the parts of the if statement that must "win" over the others must be located further near the end.
+     // Since they have a stifling effect on everything that comes before.
+
+     Mux16(a=back, b=p1, sel=inc, out=x);
+     Mux16(a=x, b=in, sel=load, out=y);
+     Mux16(a=y, b=false, sel=reset, out=z);
+     
+     // The register is always saving what is going on, so load is always true.
+     
+     Register(in=z, load=true, out=out, out=back);
 }
