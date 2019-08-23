@@ -12,3 +12,62 @@
 // the screen should remain fully clear as long as no key is pressed.
 
 // Put your code here.
+
+    @SCREEN // screen start
+    D=A
+    @R1 // store current screen location in R1
+    M=D
+    @24384 // screen end
+    D=A
+    @R2 // store screen end in R2
+    M=D
+    @KBD // 24576 keyboard location
+    D=M
+    @WHITE 
+    D;JEQ
+    @BLACK
+    D;JNE
+
+(WHITE)
+    @0
+    D=A
+    @R0 // store white in R0
+    M=D
+    @PAINTLOOP
+    0;JMP
+
+(BLACK)
+    @1
+    D=A
+    @R0 // store black in R0
+    M=D
+    @PAINTLOOP
+    0;JMP
+
+(PAINTLOOP)
+
+    @R0 // color stored in R0
+    D=M
+    @R1 // value is current screen location
+    A=M
+    M=D // set screen pixel to color
+    // if current screen loc - end screen is 0 then jump out
+    D=A
+    @R2
+    D=M-D
+    @WHERENEXT
+    D;JEQ
+    @R1
+    D=M+1
+    @R1
+    M=D
+    @PAINTLOOP
+    0;JMP
+
+(WHERENEXT)
+    @KBD // repeat to figure out where to go
+    D=M
+    @WHITE 
+    D;JEQ
+    @BLACK
+    D;JNE
