@@ -13,6 +13,7 @@
 
 // Put your code here.
 
+(START)
     @SCREEN // screen start
     D=A
     @R1 // store current screen location in R1
@@ -60,6 +61,12 @@
     0;JMP
 
 (WHERENEXT)
+    @24575
+    D=A
+    @R1
+    D=M-D
+    @START
+    D;JEQ
     @KBD // repeat to figure out where to go
     D=M
     @WHITE 
