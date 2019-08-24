@@ -17,7 +17,7 @@
     D=A
     @R1 // store current screen location in R1
     M=D
-    @24384 // screen end
+    @24575 // screen end
     D=A
     @R2 // store screen end in R2
     M=D
@@ -29,23 +29,18 @@
     D;JNE
 
 (WHITE)
-    @0
-    D=A
     @R0 // store white in R0
-    M=D
+    M=0
     @PAINTLOOP
     0;JMP
 
 (BLACK)
-    @1
-    D=A
     @R0 // store black in R0
-    M=D
+    M=-1
     @PAINTLOOP
     0;JMP
 
 (PAINTLOOP)
-
     @R0 // color stored in R0
     D=M
     @R1 // value is current screen location
