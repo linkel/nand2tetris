@@ -1,8 +1,11 @@
 # nand2tetris
-I've been curious about the course nand2tetris for a while now. Finally decided to take the plunge and go through the textbook and course materials. 
+Nand2tetris is a really cool course available completely free on the internet. It's nuts! I am currently working on project 5 and stunned by the quality of the course materials and how fun it is to work through the assignments. 
 
-## What is this?
-nand2tetris is a course where God gives you a NAND gate and you build upwards until you get to Tetris. 
+It's about starting with a NAND-gate and then building the rest of the logical chips, building an ALU, sequential chips, learning the Hack computer's assembly language, and exploring computer architecture until you've built enough parts to write Tetris and run it on the computer you wrote. 
 
 ## Progress
-Currently building the chips in project 01. Rest of folders are untouched. 
+
+- Nov/Dec 2018: Started course in Nov/Dec 2018 and got to Project 3. 
+- Became super stumped by sequential chips and also took a break to focus on career change. 
+- August 2019: Resumed the course and understood sequential chips much better (data flip flop, register/bits, tick tock)
+- August 24, 2019: Finished project 4, the intro to Hack assembly language. 
