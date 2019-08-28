@@ -86,4 +86,61 @@ Lastly, when the CPU executes a program, it must keep track of the address of th
 
 ### Input and Output
 
+Computers, to interact with stuff outside, need to use I/O devices. We don't pay attention much to the low-level architecture of these devices because the contract of these devices will (hopefully) make them all look the same to our computer. Memory-mapped I/O is when we make that device look like it's just a regular memory segment to the CPU. Now it gets allocated a spot in memory, which is the memory map for that device. For example, on the keyboard that I used last project, the memory map continually reflects the state of the keyboard--when a user was pressing the keyboard, the value representing the key was in the memory map for that duration. For the screen, the screen would continuously reflect what its memory map had--the 1's would blacken the corresponding pixel. 
+
+These get refreshed several times per second so that the user feels the response is instant. So any computer program could access any I/O device by manipulating the registers in those memory area.s 
+
+Standards are what make sure the contracts for what codes do what on a keyboard, or how a device will interact with the computer. 
+
+So you can design a CPU and platform to be independent of the number or nature or make of these I/O devices! You just allocate a new memory map to that device, pay attention to its base address, and now you just have to manipulate registers in that map according to the contract/protocol to interact with it. 
+
+## The Hack CPU
+
+So the Hack platform consists of:
+
+1. CPU
+2. Instruction Memory
+3. Data Memory
+4. Screen
+5. Keyboard
+
+The Hack CPU consists of:
+
+1. ALU 
+2. Data Register (D)
+3. Address Register (A)
+4. Program Counter (PC)
+
+These are 16-bit registers. The D stores data values, the A does three different things (store an inputted value to be saved, or points to where to jump next in instruction memory, or points to an address in the data memory to make use of). 
+
+Hack CPU executes instructions in the 16 bit format of "ixxaccccccdddjjj". 
+
+i-bit is the opcode, or operation code, which tells it what the instruction type is. 0 for A-instruction, 1 for C-instruction. 
+
+If it's an A instruction, then the instruction is treated as a 16-bit binary value that's loaded into the A register. If it's a C-instruction, then we use that formatting that I just typed up there, the ixxaccccccdddjjj stuff. Each one of those characters represents a sequence of control bits that tells it what to do. 
+
+The Hack Instruction Memory consists of:
+A direct-access read-only memory device, also called ROM. IT's 32K addressable 16-bit registers. I think we get this pre-made...
+
+The Input/Output devices interact with the memory-mapped buffers as mentioned earlier. 
+
+The Data Memory is created by a chip called Memory. This chip is three 16-bit storage devices--a RAM (16K registers), a Screen (8K registers), and a Keyboard (1 register). 
+
+So it's positions 0 to 16383, then 16384 to 24575, then 24576 on the keyboard. 
+
+The topmost chip is a Computer chip that is the CPU, instruction memory, and data memory.
+
+We have to come up with a logic gate architecture that can execute instructions and determine which instruction to be fetched next. We already have the building blocks all created in the previous projects--now we gotta arrange them and connect them correctly. 
+
+## Instruction Decoding
+
+A continuation of the ixxaccccccdddjjj stuff I mentioned earlier. 
+
+The a and c bits code the comp part of the instruction, and the d and j bits code the destination and jump parts of the instruction, and the x is unused for the C-instruction. 
+
+All these fields get routed to different parts simultaneously of the CPU architecture and different chip-parts will take it in and do what they are made to do to execute the instruction. For example, a C instruction's single a-bit determines whether the ALU will operate on the A register input or the M input, and then the six c-bits decide which function the ALU will compute. The d bits determine which registers "accept" ALU output, and the three j bits then branch control. 
+
+## Instruction Fetching
+
+After executing the current instruction, the CPU determines the address of the next one. The Program Counter always stores the address of the next instruction. We have to connect the PC output of the CPU into the address input of the instruction memory. 
 
