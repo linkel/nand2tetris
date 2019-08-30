@@ -5,7 +5,7 @@ It's about starting with a NAND-gate and then building the rest of the logical c
 
 ## Progress
 
-- Nov/Dec 2018: Started course in Nov/Dec 2018 and got to Project 3. 
-- Became super stumped by sequential chips and also took a break to focus on career change. 
-- August 2019: Resumed the course and understood sequential chips much better (data flip flop, register/bits, tick tock)
-- August 24, 2019: Finished project 4, the intro to Hack assembly language. 
+- Nov 2018: Started course end of Nov 2018.
+- Dec 2018: Became super stumped by sequential chips in Project 3 and also took a break to focus on career change. 
+- Aug 2019: Resumed the course and understood sequential chips much better (data flip flop, register/bits, tick tock)
+- Aug 24, 2019: Finished project 4, the intro to Hack assembly language.
