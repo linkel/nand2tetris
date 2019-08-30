@@ -144,3 +144,77 @@ All these fields get routed to different parts simultaneously of the CPU archite
 
 After executing the current instruction, the CPU determines the address of the next one. The Program Counter always stores the address of the next instruction. We have to connect the PC output of the CPU into the address input of the instruction memory. 
 
+By connecting the PC output into the instruction memory's input, the instruction memory will always emit the instruction that needs to be fetched and executed next. The output of the instruction memory gets connected to the instruction input of the CPU, and then we are done with that fetch-execute cycle. 
+
+So for the Hack computer, the current program gets stored in the instruction memory at address 0. If we want to start or restart execution of a program, we would set the PC to 0. So the CPU's reset input goes straight to the reset input of the PC chip. Asserting the bit on the CPU will affect PC to turn PC = 0 and then we'll go to that first instruction. After execution of the first instruction, we want to do the next, so then PC increments. PC++. 
+
+In other cases, we want to jump to an address of an instruction instead of mindlessly always executing the next line. So then we'd want to write a way to set PC = A if we jump. 
+
+Now we can see that there's two things going on for the PC, at least:
+
+1. If jump, PC = A
+2. Otherwise PC++
+
+Whether we are jumping or not depends on the j-bits of the instruction and on the ALU's output. 
+
+So the output of the A register must feed into the input of the PC register. The PC chip has a load-bit that enables it to take in a new input value, or else it'll keep hanging on to what it has. So we can assert the load-bit to execute our PC = A instead of default PC++, and now we can figure out the jump boolean part. 
+
+1. j-bits of current instruction specify the jump condition (our JEQ, JLE stuff). 
+2. ALU output bits zr and ng, which can determine if the specified condition got satisfied.
+
+The above are all excellent hints as to how to proceed. Hmmmm. 
+
+## Memory 
+
+As mentioned before, the memory chip is a combo of three lower-level chips. 
+
+1. RAM16K
+2. Screen
+3. Keyboard
+
+Users of the memory chip will see a single address space from 0 to 24576 (which is 0x6000 in hexadecimal). 
+
+So we will have to split up those address inputs right so that we can select 16394 in the memory address and access address 0 in the Screen chip. We did that in chapter 3 to link sections of memory to other sections. 
+
+## Computer
+
+Combining the 
+
+1. CPU
+2. Data Memory: RAM16K/Screen/Keyboard
+3. Instruction Memory: ROM32K
+
+will allow us to make our computer! 
+
+## General Perspective
+
+General-purpose computers can execute lots of programs. Dedicated computers are usually embedded in devices like cell phones, game consoles, cameras, weapons, factory equipment, consumer electronics, etc. For those specific applications, a single program is burned into the dedicated computer's Random Access Memory, and it'll only execute that. But otherwise these computers all share similar architecture:
+
+1. Stored programs
+2. Fetch-decode-execute logic
+3. CPU
+4. Registers
+5. Program Counters
+
+Most general-purpose computers, unlike Hack, use a single address space for storing both data and instructions. The address for the instruction and for the data must e fed into the same destination of the single address input of the shared address space. 
+
+Usually there's two cycle logic that does this.
+
+1. Fetch Cycle: instruction address is fed to the address input of memory, it emits current instruction, and stores in instruction register.
+2. Execute Cycle: decode the instruction, then the optional data address that you get from it is fed to the memory's address input, so that the instruction can manipulate the selected memory location. 
+
+The Hack computer separates the instructions and data into two separate parts so the single cycle logic can be done--however, programs cannot be changed dynamically as a result. Not the clearest on what that means...
+
+Our Hack computer here is also simpler--we don't have to worry about connecting to printers, disks, and networks. We also don't have control over brightness levels per pixel or colors in our screen. Most modern computers allow the CPU to send high-level graphics instructions to a graphics card that then controls the screen. So the CPU doesn't have to draw figures and polygons directly. The GPU would do it with its own embedded chip-set that does it better and more efficiently. It can do very many instances of simple and repetitive math, whereas the CPU can focus hard on a few instances of complex action. Something like that. 
+
+More academic/educational/complex courses/efforts about designing computer hardward is focused around better performance. Stuff like memory hierarchies (cache), I/O device access, pipelining, parallelism, instruction prefetching, and other optimization isn't covered in nand2tetris. 
+
+Sounds like there's two main schools of hardware design.
+
+1. Complex Instruction Set Computing (CISC) - get better performance by providing rich and complex instruction sets. 
+2. Reduced Instrucion Set Computing (RISC) - use simple instruction sets to promote faster hardware implementation. 
+
+Hack features neither a strong instruction set nor special hardware acceleration techniques. 
+
+
+
