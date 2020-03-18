@@ -28,4 +28,18 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
+    // 110000000000000 -> address 0x6000 which is keyboard
+    // 100000000000000 -> 0x4000 which is screen
+    // 011111111111111 -> 0x3FFF which is last entry for RAM
+    Not(in=address[14], out=flipfirstbit);
+    Not(in=address[13], out=flipsecbit);
+    And(a=flipfirstbit, b=load, out=lr); // if lr is true then ram will load
+    Not(in=lr, out=notlr); // if lr is true we shouldn't load screen
+    And(a=notlr, b=flipsecbit, out=combo); // both should be true for us to load screen
+    And(a=combo, b=load, out=ls);
+    RAM16K(in=in, load=lr, address=address[0..13], out=rout);
+    Screen(in=in, load=ls, address=address[0..12], out=sout);
+    Keyboard(out=kout);
+    Mux16(a=sout, b=kout, sel=address[13], out=kvs);
+    Mux16(a=rout, b=kvs, sel=address[14], out=out);
 }
