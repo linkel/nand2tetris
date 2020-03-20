@@ -11,3 +11,4 @@ It's about starting with a NAND-gate and then building the rest of the logical c
 - Aug 24, 2019: Finished project 4, the intro to Hack assembly language.
 - Mar 2020: After a long break due to switching gears to Skiena, I have returned! Got the Memory chip working.
 - Mar 19, 2020: The CPU chip is very buggy right now.
+    - Note: I can specify bus pins on the out by writing `out[0..14]=thingthatis15wide`. I didn't know (or forgot) I could do it on the left side too.
