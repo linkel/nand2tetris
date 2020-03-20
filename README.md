@@ -1,5 +1,5 @@
-# nand2tetris
-Nand2tetris is a really cool course available completely free on the internet. It's nuts! I am currently working on project 5 and stunned by the quality of the course materials and how fun it is to work through the assignments. 
+# The Elements of Computing Systems (nand2tetris)
+Nand2tetris is a really cool course available completely free on the internet. The first half of the textbook is freely available. It's nuts! I am currently working on project 5 and stunned by the quality of the course materials and how fun it is to work through the assignments. 
 
 It's about starting with a NAND-gate and then building the rest of the logical chips, building an ALU, sequential chips, learning the Hack computer's assembly language, and exploring computer architecture until you've built enough parts to write Tetris and run it on the computer you wrote. 
 
@@ -12,3 +12,4 @@ It's about starting with a NAND-gate and then building the rest of the logical c
 - Mar 2020: After a long break due to switching gears to Skiena, I have returned! Got the Memory chip working.
 - Mar 19, 2020: The CPU chip is very buggy right now.
     - Note: I can specify bus pins on the out by writing `out[0..14]=thingthatis15wide`. I didn't know (or forgot) I could do it on the left side too.
+- Mar 20, 2020: The CPU chip passes the test script! Also, have completed joining the three parts into the Computer chip.
