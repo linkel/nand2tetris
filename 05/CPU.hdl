@@ -40,4 +40,51 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+
+    // Decides whether to store in A Register
+    And(a=instruction[15], b=instruction[5], out=alustoreinA);
+    Not(in=instruction[15], out=instructstoreinA);
+    Or(a=alustoreinA, b=instructstoreinA, out=storeinA);
+
+    // Decides whether to store in D Register
+    And(a=instruction[15], b=instruction[4], out=storeinD);
+
+    // Decides whether to store in Memory
+    And(a=instruction[15], b=instruction[3], out=writeM, out=check);
+    // If we are writing to memory let's also update outM and addressM
+    // Mux16(a=false, b=split, sel=check, out=addressM[0..14]);
+    Mux16(a=false, b=aluout, sel=check, out=outM);
+
+    Mux16(a=instruction, b=aluout, sel=instruction[15], out=inoralu); // from A-instruction or C-instruction
+    ARegister(in=inoralu, load=storeinA, out=aout, out[0..14]=addressM);
+    DRegister(in=aluout, load=storeinD, out=dout);
+
+    Mux16(a=inM, b=aout, sel=instruction[12], out=AvM); // The a bit for C-instruction decides if using A or M. Do I care about not depending on instruction[12] if an A-instruction?
+    ALU(x=AvM, y=dout, zx=instruction[11] , nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=aluout, zr=j1, ng=j2);
+
+
+    // Handle jumps
+    Or(a=j1, b=j2, out=jj);
+    Not(in=jj, out=j3);
+    Xor(a=instruction[2], b=j1, out=x1);
+    Xor(a=instruction[1], b=j2, out=x2);
+    Xor(a=instruction[0], b=j3, out=x3);
+    Not(in=x1, out=a1);
+    Not(in=x2, out=a2);
+    Not(in=x3, out=a3);
+    And(a=a1, b=a2, out=b1);
+    And(a=a3, b=b1, out=c1); // This is if they all line up, jump!
+
+    // No jump if all zeros though
+    Not(in=instruction[2], out=n1);
+    Not(in=instruction[1], out=n2);
+    Not(in=instruction[0], out=n3);
+
+    And(a=n1,b=n2, out=noj1);
+    And(a=noj1, b=n3, out=noj); // if this is 1 then don't jump!
+
+    Mux(a=c1, b=false, sel=noj, out=dojump);
+
+    PC(in=aout, load=dojump, inc=true, reset=reset, out[0..14]=pc);
+    
 }
