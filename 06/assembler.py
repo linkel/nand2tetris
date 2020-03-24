@@ -7,6 +7,71 @@ class Parser:
         self.idx = 0
         self.curr_line = lines[0]
         self.ctriple = None
+        self.symbol_table = {'SP': 0,
+                             'LCL': 1,
+                             'ARG': 2,
+                             'THIS': 3,
+                             'THAT': 4,
+                             'R0': 0,
+                             'R1': 1,
+                             'R2': 2,
+                             'R3': 3,
+                             'R4': 4,
+                             'R5': 5,
+                             'R6': 6,
+                             'R7': 7,
+                             'R8': 8,
+                             'R9': 9,
+                             'R10': 10,
+                             'R11': 11,
+                             'R12': 12,
+                             'R13': 13,
+                             'R14': 14,
+                             'R15': 15,
+                             'SCREEN': 16384,
+                             'KBD': 24576 }
+
+        self._first_pass()
+        self._second_pass()
+
+    def _first_pass(self):
+        """Builds the symbol table's label/ROM address pair from any labels (LABEL)"""
+        rom_address = 0
+        lines_copy = []
+        while True:
+            if self.command_type() == 'L_COMMAND':
+                self.symbol_table[self.curr_line[1:len(self.curr_line)-1]] = rom_address
+            else:
+                lines_copy.append(self.curr_line)
+                rom_address += 1
+            if not self.has_more_commands():
+                break
+            self.advance()
+
+        self.idx = 0
+        self.lines = lines_copy
+        self.curr_line = self.lines[0]
+
+    def _second_pass(self):
+        """Matches symbolic A-instruction with ROM location or creates new entry in RAM"""
+        ram_address = 16
+        while True:
+            if self.command_type() == 'A_COMMAND':
+                s = self.symbol()
+                try:
+                    int(s)
+                except ValueError:
+                    if s in self.symbol_table:
+                        self.lines[self.idx] = '@' + str(s)
+                    else:
+                        self.symbol_table[s] = ram_address
+                        ram_address += 1
+            if not self.has_more_commands():
+                break
+            self.advance()
+
+        self.idx = 0
+        self.curr_line = self.lines[0]
 
     def has_more_commands(self):
         """Return True if there are more commands left"""
@@ -33,7 +98,7 @@ class Parser:
         if cmd_type == "A_COMMAND":
             return self.curr_line[1:]
         if cmd_type == "L_COMMAND":
-            raise NotImplemented
+            raise self.symbol_table[self.curr_line[1:]]
 
     def _cinstruction(self):
         if self.command_type() != "C_COMMAND":
@@ -155,7 +220,12 @@ if __name__ == "__main__":
         with open('Prog.hack', 'w') as f:
             while True:
                 if parser.command_type() == 'A_COMMAND':
-                    bin_val = bin(int(parser.symbol()))
+                    s = parser.symbol()
+                    try:
+                        int(s)
+                    except ValueError:  # it's a labelled @
+                        s = parser.symbol_table[s]
+                    bin_val = bin(int(s))
                     value = str(bin_val)[2:]
                     while len(value) < 15:
                         value = '0' + value
@@ -165,7 +235,8 @@ if __name__ == "__main__":
                         parser.jump()]
                 if instruction:
                     f.write(instruction + '\n')
-                if parser.has_more_commands():
-                    parser.advance()
-                else:
+
+                if not parser.has_more_commands():
                     break
+                parser.advance()
+
