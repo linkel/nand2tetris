@@ -13,3 +13,4 @@ It's about starting with a NAND-gate and then building the rest of the logical c
 - Mar 19, 2020: The CPU chip is very buggy right now.
     - Note: I can specify bus pins on the out by writing `out[0..14]=thingthatis15wide`. I didn't know (or forgot) I could do it on the left side too.
 - Mar 20, 2020: The CPU chip passes the test script! Also, have completed joining the three parts into the Computer chip.
+- Mar 23, 2020: I have an assembler program that works for label-free code (tested with the three provided programs).
