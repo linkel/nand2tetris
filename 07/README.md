@@ -50,6 +50,10 @@ After getting compiled it'll become Foo.vm, Bar.vm.
 After getting translated by the VM Translator, each method in the class will go from YYY class XXX method to YYY.XXX, making
 various multiple files. 
 
-# Standard Mapping
+# Thoughts
 
-
+I think for incrementing the stack pointer I'd want to do:
+```
+@SP
+M=M+1
+```

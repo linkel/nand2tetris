@@ -1,4 +1,5 @@
 import sys
+import os
 
 
 class Parser:
@@ -52,6 +53,61 @@ class Parser:
         return self.split_line[2]
 
 
+class CodeWriter:
+    def __init__(self):
+        self.file = None
+
+    def set_filename(self, filename: str):
+        """Tells CodeWriter that the translation of a new VM file has begun."""
+        self.file = open('{}'.format(filename), "w")
+
+    def write_arithmetic(self, command: str):
+        """Writes the assembly code that is the translation of the arithmetic command."""
+        if command == "add":
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                D=M
+                                @SP
+                                M=M-1
+                                A=M
+                                D=D+M
+                                M=D
+                                @SP
+                                M=M+1''')
+        else:
+            return NotImplemented
+
+    def write_pushpop(self, command: str, segment: str, index: int):
+        """Writes the assembly code that is the translation of the given command push or pop."""
+        if command == "push":
+            # do push stuff
+            if segment == "constant":
+                self.file.write('@{}\nD=A\n@SP\nA=M\nM=D\n@SP\nM=M+1'.format(index))
+            elif segment == "local":
+                pass
+                # Todo: implement the other push segments
+        elif command == "C_POP":
+            # do pop stuff
+            pass
+        else:
+            raise ValueError
+
+    def close(self):
+        """Close the output file."""
+        self.file.close()
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("usage: VMtranslator.py source")
+    path = sys.argv[1]
+    if os.path.isdir(path):
+        # do directory stuff (for each .vm file in there, run the parser thing on it)
+        pass
+    elif os.path.isfile(path) and os.path.splitext(path)[1] == '.vm':
+        with open(sys.argv[1]) as f:
+            lines = f.readlines()
+            lines = [line.partition('//')[0].strip() for line in lines]
+            lines = [line for line in lines if line]
+            parser = Parser(lines)
