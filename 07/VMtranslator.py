@@ -71,8 +71,25 @@ class CodeWriter:
                                 @SP
                                 M=M-1
                                 A=M
-                                D=D+M
-                                M=D
+                                M=D+M
+                                @SP
+                                M=M+1''')
+        if command == "sub":
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                D=M
+                                @SP
+                                M=M-1
+                                A=M
+                                M=M-D
+                                @SP
+                                M=M+1''')
+        if command == "neg":
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                M=-M
                                 @SP
                                 M=M+1''')
         else:
@@ -104,10 +121,22 @@ if __name__ == "__main__":
     path = sys.argv[1]
     if os.path.isdir(path):
         # do directory stuff (for each .vm file in there, run the parser thing on it)
-        pass
+        for directory, subdirectories, files in os.walk(path):
+            for file in files:
+                if file.endswith('.vm'):
+                    with open(file) as f:
+                        lines = f.readlines()
+                        lines = [line.partition('//')[0].strip() for line in lines]
+                        lines = [line for line in lines if line]
+                        parser = Parser(lines)
+                        code_writer = CodeWriter()
+                        code_writer.set_filename(os.path.splitex(file)[0] + '.asm')
+
     elif os.path.isfile(path) and os.path.splitext(path)[1] == '.vm':
-        with open(sys.argv[1]) as f:
+        with open(path) as f:
             lines = f.readlines()
             lines = [line.partition('//')[0].strip() for line in lines]
             lines = [line for line in lines if line]
             parser = Parser(lines)
+            code_writer = CodeWriter()
+            code_writer.set_filename(os.path.splitex(path)[0] + '.asm')

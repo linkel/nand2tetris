@@ -14,4 +14,6 @@ It's about starting with a NAND-gate and then building the rest of the logical c
     - Note: I can specify bus pins on the out by writing `out[0..14]=thingthatis15wide`. I didn't know (or forgot) I could do it on the left side too.
 - Mar 20, 2020: The CPU chip passes the test script! Also, have completed joining the three parts into the Computer chip.
 - Mar 23, 2020: I have an assembler program that works for label-free code (tested with the three provided programs).
-- Mar 24, 2020: I have completed the assembler. It works for code with labels. Successfully played Pong translated from assembly to binary via my assembler.
+- Mar 24, 2020: I have completed the assembler. It works for code with labels. Successfully played Pong translated from assembly to binary via the assembler I wrote.
+- Mar 31, 2020: Working slowly on chapter 7, the VM. Writing something to convert from an intermediate language into assembly.
+    - Qualms: Is it really okay for me to have 6 - 8 assembly instructions per VM command? Feels like unknown territory.
