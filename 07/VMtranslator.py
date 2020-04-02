@@ -56,6 +56,7 @@ class Parser:
 class CodeWriter:
     def __init__(self):
         self.file = None
+        self.label_number = 0
 
     def set_filename(self, filename: str):
         """Tells CodeWriter that the translation of a new VM file has begun."""
@@ -92,6 +93,113 @@ class CodeWriter:
                                 M=-M
                                 @SP
                                 M=M+1''')
+        if command == 'eq':
+            label_eq = self._generate_label()
+            label_neq = self._generate_label()
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                D=M
+                                @SP
+                                M=M-1
+                                A=M
+                                D=M-D
+                                @{}
+                                D;JEQ
+                                @SP
+                                A=M
+                                M=0
+                                @{}
+                                D;JNE
+                                ({})
+                                @SP
+                                A=M
+                                M=-1
+                                ({})
+                                @SP
+                                M=M+1
+            '''.format(label_eq, label_neq, label_eq, label_neq))
+        if command == 'gt':
+            label_gt = self._generate_label()
+            label_ngt = self._generate_label()
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                D=M
+                                @SP
+                                M=M-1
+                                A=M
+                                D=M-D
+                                @{}
+                                D;JGT
+                                @SP
+                                A=M
+                                M=0
+                                @{}
+                                D;JLE
+                                ({})
+                                @SP
+                                A=M
+                                M=-1
+                                ({})
+                                @SP
+                                M=M+1
+            '''.format(label_gt, label_ngt, label_gt, label_ngt))
+        if command == 'lt':
+            label_lt = self._generate_label()
+            label_nlt = self._generate_label()
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                D=M
+                                @SP
+                                M=M-1
+                                A=M
+                                D=M-D
+                                @{}
+                                D;JLT
+                                @SP
+                                A=M
+                                M=0
+                                @{}
+                                D;JGE
+                                ({})
+                                @SP
+                                A=M
+                                M=-1
+                                ({})
+                                @SP
+                                M=M+1
+            '''.format(label_lt, label_nlt, label_lt, label_nlt))
+        if command == "and":
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                D=M
+                                @SP
+                                M=M-1
+                                A=M
+                                M=D&M
+                                @SP
+                                M=M+1''')
+        if command == "or":
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                D=M
+                                @SP
+                                M=M-1
+                                A=M
+                                M=D|M
+                                @SP
+                                M=M+1''')
+        if command == "not":
+            self.file.write('''@SP
+                                M=M-1
+                                A=M
+                                M=!M
+                                @SP
+                                M=M+1''')
         else:
             return NotImplemented
 
@@ -113,6 +221,11 @@ class CodeWriter:
     def close(self):
         """Close the output file."""
         self.file.close()
+
+    def _generate_label(self) -> str:
+        label_number = self.label_number
+        self.label_number += 1
+        return 'label' + label_number
 
 
 if __name__ == "__main__":
