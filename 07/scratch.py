@@ -16,8 +16,10 @@ help"""
 
 ex3 = "python why {}".format("god")
 
-ex4 = 'i\'m on 3.5 no fstrings for me'
+ex4 = '@SP\n' \
+      'AM=M+1\n' \
+      'M=A\n'
 
 print(ex1)
 print(ex2)
-print(ex3)
+print(ex4)

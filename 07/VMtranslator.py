@@ -69,172 +69,152 @@ class CodeWriter:
     def write_arithmetic(self, command: str):
         """Writes the assembly code that is the translation of the arithmetic command."""
         if command == "add":
-            self.file.write('''
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-M=D+M
-@SP
-M=M+1
-''')
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M\n'
+                            '@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'M=D+M\n'
+                            '@SP\n'
+                            'M=M+1\n')
         if command == "sub":
-            self.file.write('''
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-M=M-D
-@SP
-M=M+1
-''')
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M\n'
+                            '@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'M=M-D\n'
+                            '@SP\n'
+                            'M=M+1\n')
         if command == "neg":
-            self.file.write('''
-@SP
-M=M-1
-A=M
-M=-M
-@SP
-M=M+1
-''')
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'M=-M\n'
+                            '@SP\n'
+                            'M=M+1\n')
         if command == 'eq':
             label_eq = self._generate_label()
             label_neq = self._generate_label()
-            self.file.write('''
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-D=M-D
-@{}
-D;JEQ
-@SP
-A=M
-M=0
-@{}
-D;JNE
-({})
-@SP
-A=M
-M=-1
-({})
-@SP
-M=M+1
-            '''.format(label_eq, label_neq, label_eq, label_neq))
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M\n'
+                            '@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M-D\n'
+                            '@{}\n'
+                            'D;JEQ\n'
+                            '@SP\n'
+                            'A=M\n'
+                            'M=0\n'
+                            '@{}\n'
+                            'D;JNE\n'
+                            '({})\n'
+                            '@SP\n'
+                            'A=M\n'
+                            'M=-1\n'
+                            '({})\n'
+                            '@SP\n'
+                            'M=M+1\n'.format(label_eq, label_neq, label_eq, label_neq))
         if command == 'gt':
             label_gt = self._generate_label()
             label_ngt = self._generate_label()
-            self.file.write('''
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-D=M-D
-@{}
-D;JGT
-@SP
-A=M
-M=0
-@{}
-D;JLE
-({})
-@SP
-A=M
-M=-1
-({})
-@SP
-M=M+1
-            '''.format(label_gt, label_ngt, label_gt, label_ngt))
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M\n'
+                            '@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M-D\n'
+                            '@{}\n'
+                            'D;JGT\n'
+                            '@SP\n'
+                            'A=M\n'
+                            'M=0\n'
+                            '@{}\n'
+                            'D;JLE\n'
+                            '({})\n'
+                            '@SP\n'
+                            'A=M\n'
+                            'M=-1\n'
+                            '({})\n'
+                            '@SP\n'
+                            'M=M+1\n'.format(label_gt, label_ngt, label_gt, label_ngt))
         if command == 'lt':
             label_lt = self._generate_label()
             label_nlt = self._generate_label()
-            self.file.write('''@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-D=M-D
-@{}
-D;JLT
-@SP
-A=M
-M=0
-@{}
-D;JGE
-({})
-@SP
-A=M
-M=-1
-({})
-@SP
-M=M+1
-            '''.format(label_lt, label_nlt, label_lt, label_nlt))
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M\n'
+                            '@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M-D\n'
+                            '@{}\n'
+                            'D;JLT\n'
+                            '@SP\n'
+                            'A=M\n'
+                            'M=0\n'
+                            '@{}\n'
+                            'D;JGE\n'
+                            '({})\n'
+                            '@SP\n'
+                            'A=M\n'
+                            'M=-1\n'
+                            '({})\n'
+                            '@SP\n'
+                            'M=M+1\n'.format(label_lt, label_nlt, label_lt, label_nlt))
         if command == "and":
-            self.file.write('''
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-M=D&M
-@SP
-M=M+1
-                                ''')
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M\n'
+                            '@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'M=D&M\n'
+                            '@SP\n'
+                            'M=M+1\n')
         if command == "or":
-            self.file.write('''
-@SP
-M=M-1
-A=M
-D=M
-@SP
-M=M-1
-A=M
-M=D|M
-@SP
-M=M+1
-                                ''')
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'D=M\n'
+                            '@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'M=D|M\n'
+                            '@SP\n'
+                            'M=M+1\n')
         if command == "not":
-            self.file.write('''
-@SP
-M=M-1
-A=M
-M=!M
-@SP
-M=M+1
-                                ''')
+            self.file.write('@SP\n'
+                            'M=M-1\n'
+                            'A=M\n'
+                            'M=!M\n'
+                            '@SP\n'
+                            'M=M+1\n')
         else:
             return NotImplemented
 
     def write_pushpop(self, command: str, segment: str, index: int):
         """Writes the assembly code that is the translation of the given command push or pop."""
         if command == "C_PUSH":
-            # do push stuff
             if segment == "constant":
-                self.file.write('''
-@{}
-D=A
-@SP
-A=M
-M=D
-@SP
-M=M+1
-                                   '''.format(index))
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@SP\n'
+                                'A=M\n'
+                                'M=D\n'
+                                '@SP\n'
+                                'M=M+1\n'.format(index))
             elif segment == "local":
                 pass
                 # Todo: implement the other push segments
