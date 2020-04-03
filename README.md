@@ -17,3 +17,4 @@ It's about starting with a NAND-gate and then building the rest of the logical c
 - Mar 24, 2020: I have completed the assembler. It works for code with labels. Successfully played Pong translated from assembly to binary via the assembler I wrote.
 - Mar 31, 2020: Working slowly on chapter 7, the VM. Writing something to convert from an intermediate language into assembly.
     - Qualms: Is it really okay for me to have 6 - 8 assembly instructions per VM command? Feels like unknown territory.
+- Apr 3, 2020: Done with Stage I of Chapter 7 project, which is to implement the VM arithmetic and logical commands with the constant push.

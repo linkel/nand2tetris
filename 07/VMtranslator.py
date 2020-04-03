@@ -259,8 +259,9 @@ if __name__ == "__main__":
         for directory, subdirectories, files in os.walk(path):
             for file in files:
                 if file.endswith('.vm'):
-                    with open(os.path.join(path, file)) as f:
-                        run(f, file)
+                    filepath = os.path.join(path, file)
+                    with open(filepath) as f:
+                        run(f, filepath)
 
     elif os.path.isfile(path) and os.path.splitext(path)[1] == '.vm':
         with open(path) as f:
