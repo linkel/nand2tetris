@@ -57,3 +57,8 @@ I think for incrementing the stack pointer I'd want to do:
 @SP
 M=M+1
 ```
+
+Interestingly when pushing to a segment offset it's no big deal to grab the offset, store into D register, go to the offset address, then grab the info there,
+and then go to the stack pointer's address and save it in. But it's not possible to POP with just one D register like that--you need to hold the info on the offset address, otherwise you
+lose it when you switch addresses. So I am using the R13 register as storage for the address offset. 
+

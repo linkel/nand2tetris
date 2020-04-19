@@ -79,7 +79,7 @@ class CodeWriter:
                             'M=D+M\n'
                             '@SP\n'
                             'M=M+1\n')
-        if command == "sub":
+        elif command == "sub":
             self.file.write('@SP\n'
                             'M=M-1\n'
                             'A=M\n'
@@ -90,14 +90,14 @@ class CodeWriter:
                             'M=M-D\n'
                             '@SP\n'
                             'M=M+1\n')
-        if command == "neg":
+        elif command == "neg":
             self.file.write('@SP\n'
                             'M=M-1\n'
                             'A=M\n'
                             'M=-M\n'
                             '@SP\n'
                             'M=M+1\n')
-        if command == 'eq':
+        elif command == 'eq':
             label_eq = self._generate_label()
             label_neq = self._generate_label()
             self.file.write('@SP\n'
@@ -122,7 +122,7 @@ class CodeWriter:
                             '({})\n'
                             '@SP\n'
                             'M=M+1\n'.format(label_eq, label_neq, label_eq, label_neq))
-        if command == 'gt':
+        elif command == 'gt':
             label_gt = self._generate_label()
             label_ngt = self._generate_label()
             self.file.write('@SP\n'
@@ -147,7 +147,7 @@ class CodeWriter:
                             '({})\n'
                             '@SP\n'
                             'M=M+1\n'.format(label_gt, label_ngt, label_gt, label_ngt))
-        if command == 'lt':
+        elif command == 'lt':
             label_lt = self._generate_label()
             label_nlt = self._generate_label()
             self.file.write('@SP\n'
@@ -172,7 +172,7 @@ class CodeWriter:
                             '({})\n'
                             '@SP\n'
                             'M=M+1\n'.format(label_lt, label_nlt, label_lt, label_nlt))
-        if command == "and":
+        elif command == "and":
             self.file.write('@SP\n'
                             'M=M-1\n'
                             'A=M\n'
@@ -183,7 +183,7 @@ class CodeWriter:
                             'M=D&M\n'
                             '@SP\n'
                             'M=M+1\n')
-        if command == "or":
+        elif command == "or":
             self.file.write('@SP\n'
                             'M=M-1\n'
                             'A=M\n'
@@ -194,7 +194,7 @@ class CodeWriter:
                             'M=D|M\n'
                             '@SP\n'
                             'M=M+1\n')
-        if command == "not":
+        elif command == "not":
             self.file.write('@SP\n'
                             'M=M-1\n'
                             'A=M\n'
@@ -206,7 +206,7 @@ class CodeWriter:
 
     def write_pushpop(self, command: str, segment: str, index: int):
         """Writes the assembly code that is the translation of the given command push or pop."""
-        if command == "C_PUSH":
+        if command == "C_PUSH":  # TODO: Implement push for static segment
             if segment == "constant":
                 self.file.write('@{}\n'
                                 'D=A\n'
@@ -215,12 +215,153 @@ class CodeWriter:
                                 'M=D\n'
                                 '@SP\n'
                                 'M=M+1\n'.format(index))
+            elif segment == "argument":
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@ARG\n'
+                                'A=D+M\n'  # add offset
+                                'D=M\n'
+                                '@SP\n'
+                                'A=M\n'
+                                'M=D\n'
+                                '@SP\n'
+                                'M=M+1\n'.format(index))
             elif segment == "local":
-                pass
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@LCL\n'
+                                'A=D+M\n'  # add offset
+                                'D=M\n'
+                                '@SP\n'
+                                'A=M\n'
+                                'M=D\n'
+                                '@SP\n'
+                                'M=M+1\n'.format(index))
+            elif segment == "this":
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@THIS\n'
+                                'A=D+M\n'  # add offset
+                                'D=M\n'
+                                '@SP\n'
+                                'A=M\n'
+                                'M=D\n'
+                                '@SP\n'
+                                'M=M+1\n'.format(index))
+            elif segment == "that":
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@THAT\n'
+                                'A=D+M\n'  # add offset
+                                'D=M\n'
+                                '@SP\n'
+                                'A=M\n'
+                                'M=D\n'
+                                '@SP\n'
+                                'M=M+1\n'.format(index))
+            elif segment == "pointer":
+                if index == 0:
+                    self.file.write('@THIS\n'
+                                    'D=A\n'                              
+                                    '@SP\n'
+                                    'A=M\n'
+                                    'M=D\n'
+                                    '@SP\n'
+                                    'M=M+1\n')
+                elif index == 0:
+                    self.file.write('@THAT\n'
+                                    'D=A\n'
+                                    '@SP\n'
+                                    'A=M\n'
+                                    'M=D\n'
+                                    '@SP\n'
+                                    'M=M+1\n')
+                else:
+                    raise Exception("Index is out of range for pointer segment, only 0 or 1 permitted")
+
+            elif segment == "temp":
+                if int(index) < 0 or int(index) > 7:
+                    raise Exception("Out of range for temp segment")
+                self.file.write('@{}\n'
+                                'D=M\n'
+                                '@SP\n'
+                                'A=M\n'
+                                'M=D\n'
+                                '@SP\n'
+                                'M=M+1\n'.format(str(int(index) + 5)))
+
+            else:
+                raise Exception("Segment not matching any of expected")
                 # Todo: implement the other push segments
         elif command == "C_POP":
-            # Todo: implement pop
-            pass
+            # Todo: implement pop for pointer. Is it necessary for static?
+            if segment == "argument":
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@ARG\n'
+                                'D=D+M\n'
+                                '@R13\n'  # Save the segment offset address in R13 register
+                                'M=D\n'
+                                '@SP\n'  # Pop from stack
+                                'M=M-1\n'
+                                'A=M\n'
+                                'D=M\n'
+                                '@R13\n'
+                                'A=M\n'  # Set address to what was saved in R13
+                                'M=D\n'.format(index))
+            elif segment == "local":
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@LCL\n'
+                                'D=D+M\n'
+                                '@R13\n'  # Save the segment offset address in R13 register
+                                'M=D\n'
+                                '@SP\n'  # Pop from stack
+                                'M=M-1\n'
+                                'A=M\n'
+                                'D=M\n'
+                                '@R13\n'
+                                'A=M\n'  # Set address to what was saved in R13
+                                'M=D\n'.format(index))
+            elif segment == "this":
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@THIS\n'
+                                'D=D+M\n'
+                                '@R13\n'  # Save the segment offset address in R13 register
+                                'M=D\n'
+                                '@SP\n'  # Pop from stack
+                                'M=M-1\n'
+                                'A=M\n'
+                                'D=M\n'
+                                '@R13\n'
+                                'A=M\n'  # Set address to what was saved in R13
+                                'M=D\n'.format(index))
+            elif segment == "that":
+                self.file.write('@{}\n'
+                                'D=A\n'
+                                '@THAT\n'
+                                'D=D+M\n'
+                                '@R13\n'  # Save the segment offset address in R13 register
+                                'M=D\n'
+                                '@SP\n'  # Pop from stack
+                                'M=M-1\n'
+                                'A=M\n'
+                                'D=M\n'
+                                '@R13\n'
+                                'A=M\n'  # Set address to what was saved in R13
+                                'M=D\n'.format(index))
+            elif segment == "temp":
+                if int(index) < 0 or int(index) > 7:
+                    raise Exception("Out of range for temp segment")
+                self.file.write('@SP\n'  # Pop from stack
+                                'M=M-1\n'
+                                'A=M\n'
+                                'D=M\n'
+                                '@{}\n' # Go to temp segment offset and store within
+                                'M=D\n'.format(str(int(index) + 5)))
+            else:
+                raise Exception("Segment not matching any of expected")
         else:
             raise ValueError
 
