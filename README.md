@@ -18,3 +18,5 @@ It's about starting with a NAND-gate and then building the rest of the logical c
 - Mar 31, 2020: Working slowly on chapter 7, the VM. Writing something to convert from an intermediate language into assembly.
     - Qualms: Is it really okay for me to have 6 - 8 assembly instructions per VM command? Feels like unknown territory.
 - Apr 3, 2020: Done with Stage I of Chapter 7 project, which is to implement the VM arithmetic and logical commands with the constant push.
+- Apr 19, 2020: Took a break since I started my new job. Now resuming work on the memory access, Stage II of the Chapter 7 project.
+    - I got the Basic Test to work, but still need to implement popping of the pointer segment as well as the static segment's push and pop. 

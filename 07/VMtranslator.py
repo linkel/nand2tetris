@@ -204,7 +204,7 @@ class CodeWriter:
         else:
             return NotImplemented
 
-    def write_pushpop(self, command: str, segment: str, index: int):
+    def write_pushpop(self, command: str, segment: str, index: str):
         """Writes the assembly code that is the translation of the given command push or pop."""
         if command == "C_PUSH":  # TODO: Implement push for static segment
             if segment == "constant":
@@ -260,17 +260,17 @@ class CodeWriter:
                                 '@SP\n'
                                 'M=M+1\n'.format(index))
             elif segment == "pointer":
-                if index == 0:
+                if index == '0':
                     self.file.write('@THIS\n'
-                                    'D=A\n'                              
+                                    'D=M\n'                              
                                     '@SP\n'
                                     'A=M\n'
                                     'M=D\n'
                                     '@SP\n'
                                     'M=M+1\n')
-                elif index == 0:
+                elif index == '1':
                     self.file.write('@THAT\n'
-                                    'D=A\n'
+                                    'D=M\n'
                                     '@SP\n'
                                     'A=M\n'
                                     'M=D\n'
@@ -351,6 +351,24 @@ class CodeWriter:
                                 '@R13\n'
                                 'A=M\n'  # Set address to what was saved in R13
                                 'M=D\n'.format(index))
+            elif segment == "pointer":
+                if index == '0':
+                    self.file.write('@SP\n'
+                                    'M=M-1\n'                              
+                                    'A=M\n'
+                                    'D=M\n'
+                                    '@THIS\n'
+                                    'M=D\n')
+                elif index == '1':
+                    self.file.write('@SP\n'
+                                    'M=M-1\n'                              
+                                    'A=M\n'
+                                    'D=M\n'
+                                    '@THAT\n'
+                                    'M=D\n')
+                else:
+                    print(index)
+                    raise Exception("Index is out of range for pointer segment, only 0 or 1 permitted")
             elif segment == "temp":
                 if int(index) < 0 or int(index) > 7:
                     raise Exception("Out of range for temp segment")
