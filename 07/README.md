@@ -62,3 +62,5 @@ Interestingly when pushing to a segment offset it's no big deal to grab the offs
 and then go to the stack pointer's address and save it in. But it's not possible to POP with just one D register like that--you need to hold the info on the offset address, otherwise you
 lose it when you switch addresses. So I am using the R13 register as storage for the address offset. 
 
+The way this thing handles the static push and pop is weirding me out a bit. So we're just making unique labels which get stored in the RAM addresses
+starting at 16 and onwards, and then it just works? 

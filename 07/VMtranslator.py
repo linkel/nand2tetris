@@ -60,11 +60,13 @@ class Parser:
 class CodeWriter:
     def __init__(self):
         self.file = None
+        self.filename = None
         self.label_number = 0
 
     def set_filename(self, filename: str):
         """Tells CodeWriter that the translation of a new VM file has begun."""
         self.file = open('{}'.format(filename), "w")
+        self.filename = os.path.basename(filename);
 
     def write_arithmetic(self, command: str):
         """Writes the assembly code that is the translation of the arithmetic command."""
@@ -206,7 +208,7 @@ class CodeWriter:
 
     def write_pushpop(self, command: str, segment: str, index: str):
         """Writes the assembly code that is the translation of the given command push or pop."""
-        if command == "C_PUSH":  # TODO: Implement push for static segment
+        if command == "C_PUSH":
             if segment == "constant":
                 self.file.write('@{}\n'
                                 'D=A\n'
@@ -278,7 +280,6 @@ class CodeWriter:
                                     'M=M+1\n')
                 else:
                     raise Exception("Index is out of range for pointer segment, only 0 or 1 permitted")
-
             elif segment == "temp":
                 if int(index) < 0 or int(index) > 7:
                     raise Exception("Out of range for temp segment")
@@ -289,12 +290,17 @@ class CodeWriter:
                                 'M=D\n'
                                 '@SP\n'
                                 'M=M+1\n'.format(str(int(index) + 5)))
-
+            elif segment == "static":
+                self.file.write('@{}\n'
+                                'D=M\n'
+                                '@SP\n'
+                                'A=M\n'
+                                'M=D\n'
+                                '@SP\n'
+                                'M=M+1\n'.format(self.filename + '.' + index))
             else:
                 raise Exception("Segment not matching any of expected")
-                # Todo: implement the other push segments
         elif command == "C_POP":
-            # Todo: implement pop for pointer. Is it necessary for static?
             if segment == "argument":
                 self.file.write('@{}\n'
                                 'D=A\n'
@@ -376,8 +382,15 @@ class CodeWriter:
                                 'M=M-1\n'
                                 'A=M\n'
                                 'D=M\n'
-                                '@{}\n' # Go to temp segment offset and store within
+                                '@{}\n'  # Go to temp segment offset and store within
                                 'M=D\n'.format(str(int(index) + 5)))
+            elif segment == "static":
+                self.file.write('@SP\n'  # Pop from stack
+                                'M=M-1\n'
+                                'A=M\n'
+                                'D=M\n'
+                                '@{}\n'  # Go to the static segment offset and store within
+                                'M=D\n'.format(self.filename + "." + index))
             else:
                 raise Exception("Segment not matching any of expected")
         else:
