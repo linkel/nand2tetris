@@ -68,6 +68,13 @@ class CodeWriter:
         self.file = open('{}'.format(filename), "w")
         self.filename = os.path.basename(filename);
 
+    def write_init(self):
+        # Initialize stack pointer (SP) to 256
+        self.file.write('@256\n'
+                        'D=A\n'
+                        '@SP\n'
+                        'M=D\n')
+
     def write_arithmetic(self, command: str):
         """Writes the assembly code that is the translation of the arithmetic command."""
         if command == "add":
