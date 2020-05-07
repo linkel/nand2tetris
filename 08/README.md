@@ -30,3 +30,16 @@ Jump if a given boolean condition is true? Where do we get the boolean expressio
 
 You can see that the VM commands label, goto label, and if-goto label will have something to do with this branching. We will express these commands 
 using the branching logic of the assembly language. 
+
+## Labeling
+
+Here, the function labels will all be in the format (function_name$label) so that they're unique. 
+
+This means I should save what function scope I'm in since if there's a need to jump to a label there, I need that function name, right?
+ 
+## Other Notes
+
+Seems like all the folders now in Proj 8 have Sys.vm files that will create a Sys.init function. So in this implementation of the VM translator, I can always
+just commit to expecting that it exists given that the bootstrapper code will always call it. Meaning my previous proj 7 stuff won't have Sys.init and that program isn't compatible (unless I
+do something with an argument or using it only if it exists).
+

@@ -74,6 +74,23 @@ class CodeWriter:
                         'D=A\n'
                         '@SP\n'
                         'M=D\n')
+        # TODO: Then call sys.init. Need to implement the function calling process before this.
+        # Each translated program has one sys.init.
+
+    def write_label(self, function, label):
+        self.file.write('({}${})\n'.format(function, label))
+
+    def write_goto(self, function, label):
+        self.file.write('@{}${}\n'
+                        '0;JMP\n'.format(function, label))
+
+    def write_if(self, function, label):
+        self.file.write('@SP\n'
+                        'M=M-1\n'
+                        'A=M\n'
+                        'D=M\n'
+                        '@{}${}\n'
+                        'D;JNE'.format(function, label))
 
     def write_arithmetic(self, command: str):
         """Writes the assembly code that is the translation of the arithmetic command."""
