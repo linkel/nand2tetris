@@ -39,7 +39,24 @@ This means I should save what function scope I'm in since if there's a need to j
  
 ## Other Notes
 
-Seems like all the folders now in Proj 8 have Sys.vm files that will create a Sys.init function. So in this implementation of the VM translator, I can always
+Seems like all the folders now for function calls in Proj 8 have Sys.vm files that will create a Sys.init function. So in this implementation of the VM translator, I can always
 just commit to expecting that it exists given that the bootstrapper code will always call it. Meaning my previous proj 7 stuff won't have Sys.init and that program isn't compatible (unless I
 do something with an argument or using it only if it exists).
 
+## Program Flow
+
+Figure 8.5 in the book details what to do when calling a function, declaring a function, and returning from a function. Will try to implement that. It feels like I could use the write pushpop functions I have already written to simplify some of the pushing. For example, for the call f n command listed in the book, it says:
+
+```
+push return-address
+push LCL
+push ARG
+push THIS
+push THAT
+ARG = SP - n - 5
+LCL = SP
+goto f
+(return-address)
+```
+
+And it seems like I could use push constant giving it the special address, and use the subtraction I have already written in chapter 7 to do the part that calculates what ARG is now. From a clean code perspective it feels a little janky to use a push constant and give it the label instead--feels like that should be another function, or should leave a comment about the function's overloadedness. Not 100% sure if it works yet though so will play with it. 
