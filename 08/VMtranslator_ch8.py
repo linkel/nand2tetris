@@ -78,11 +78,17 @@ class CodeWriter:
         # Each translated program has one sys.init.
 
     def write_label(self, function, label):
+        """Write a label belonging to parent function 'function'"""
         self.file.write('({}${})\n'.format(function, label))
 
-    def write_goto(self, function, label):
-        self.file.write('@{}${}\n'
-                        '0;JMP\n'.format(function, label))
+    def write_goto(self, function, label=None):
+        """Write a goto, to either a function, or a label inside a function."""
+        if label:
+            self.file.write('@{}${}\n'
+                            '0;JMP\n'.format(function, label))
+        else:
+            self.file.write('@{}\n'
+                            '0;JMP\n'.format(function))
 
     def write_if(self, function, label):
         self.file.write('@SP\n'
@@ -91,6 +97,40 @@ class CodeWriter:
                         'D=M\n'
                         '@{}${}\n'
                         'D;JNE'.format(function, label))
+
+    def write_call(self, function, param_count):
+        return_address = self._generate_label()
+        self.write_pushpop('C_PUSH', 'constant', return_address)
+        self.write_pushpop('C_PUSH', 'constant', 'LCL')
+        self.write_pushpop('C_PUSH', 'constant', 'ARG')
+        self.write_pushpop('C_PUSH', 'constant', 'THIS')
+        self.write_pushpop('C_PUSH', 'constant', 'THAT')
+        
+        # set ARG to SP - n - 5 where n is param_count
+        self.write_pushpop('C_PUSH', 'constant', 'SP')
+        self.write_pushpop('C_PUSH', 'constant', str(param_count))
+        self.write_arithmetic('sub')
+        self.write_pushpop('C_PUSH', 'constant', '5')
+        self.write_arithmetic('sub')
+        self.file.write('@SP\n'
+                        'A=M\n'
+                        'D=M\n'
+                        '@ARG\n'
+                        'M=D\n'
+                        '@SP\n'
+                        'M=M-1\n')
+        # reposition LCL (local) to SP (where we are now on stack)
+        self.file.write('@SP\n'
+                        'D=M\n'
+                        '@LCL\n'
+                        'M=D\n')
+        # TODO: I need to be able to go to the function, as well as the 
+        # if the function has any labels inside of it, to go to its function$label? 
+        # Doublecheck correctness of this.
+        self.write_goto(function)
+
+        self.file.write('{}\n'.format(return_address))
+        
 
     def write_arithmetic(self, command: str):
         """Writes the assembly code that is the translation of the arithmetic command."""
