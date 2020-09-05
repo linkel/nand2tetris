@@ -60,3 +60,10 @@ goto f
 ```
 
 And it seems like I could use push constant giving it the special address, and use the subtraction I have already written in chapter 7 to do the part that calculates what ARG is now. From a clean code perspective it feels a little janky to use a push constant and give it the label instead--feels like that should be another function, or should leave a comment about the function's overloadedness. Not 100% sure if it works yet though so will play with it. 
+
+## Pointers
+
+Still not 100% instant knowledge for me when it comes to storing, for example, LCL in a temp variable. LCL is a fixed location in memory meant to store the address to the start of local variables. So if I am storing the address to which LCL points to then that's TEMP = LCL? Versus storing the actual memory fixed location of LCL, which would be TEMP = *LCL? I'd probably never be intending to do the latter. Gonna have to double check my call and return function to make sure I'm not conflating these two things in my generated assembly code.
+
+## *ARG = pop()
+I don't think I completely understand this step. We're popping off the top of the stack into ARG. 

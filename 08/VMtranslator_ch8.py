@@ -101,7 +101,7 @@ class CodeWriter:
     def write_call(self, function, param_count):
         return_address = self._generate_label()
         self.write_pushpop('C_PUSH', 'constant', return_address)
-        self.write_pushpop('C_PUSH', 'constant', 'LCL')
+        self.write_pushpop('C_PUSH', 'constant', 'LCL') # TODO: Make sure pushing these named mem locations works
         self.write_pushpop('C_PUSH', 'constant', 'ARG')
         self.write_pushpop('C_PUSH', 'constant', 'THIS')
         self.write_pushpop('C_PUSH', 'constant', 'THAT')
@@ -130,7 +130,53 @@ class CodeWriter:
         self.write_goto(function)
 
         self.file.write('{}\n'.format(return_address))
+
+    def write_function(self, function_name, k):
+        """Declare a function function_name that has k local variables"""
+        self.file.write('({})\n'.format(function))
+        for i in range(len(k)):
+            self.write_pushpop('C_PUSH', 'constant', '0')
+
+    def write_return(self):
+        # save LCL in R13, which is 'FRAME' in Fig 8.5
+        self.file.write('@LCL\n'
+                        'D=M\n'
+                        '@R13\n' 
+                        'M=D\n')
+        # TODO: I think this following line is wrong, I need to push the contents of R13...
+        self.write_pushpop('C_PUSH', 'constant', 'R13') # is this pushing the contents of R13 or R13 itself? :( I need to push the content
+        self.write_pushpop('C_PUSH', 'constant', '5')
+        self.write_arithmetic('sub')
+        # R14 is 'RETURN', set RETURN to *(FRAME-5)
+        self.file.write('@SP\n'
+                        'D=M\n'
+                        '@R14\n'
+                        'M=D\n')
+        # TODO: The following line is for *ARG = pop() - I don't quite understand this. Need to review it.
+        self.write_pushpop('C_POP', 'argument', '0')
+        # Restore SP, THAT, THIS, ARG, LCL for the caller
+        self.file.write('@ARG\n'
+                        'D=M+1\n'
+                        '@SP\n'
+                        'M=D\n'
+                        '@R13\n'
+                        'D=A-1\n'
+                        '@THAT\n'
+                        'M=D\n'
+                        '@THIS\n'
+                        'D=D-1\n'
+                        'M=D\n'
+                        '@ARG\n'
+                        'D=D-1\n'
+                        'M=D\n'
+                        '@LCL\n'
+                        'D=D-1\n'
+                        'M=D\n')
+        # GOTO RETURN (R14)
+        self.file.write('@R14\n'
+                        '0;JMP\n')
         
+
 
     def write_arithmetic(self, command: str):
         """Writes the assembly code that is the translation of the arithmetic command."""
