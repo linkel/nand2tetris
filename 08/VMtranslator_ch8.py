@@ -1,7 +1,6 @@
 import sys
 import os
 
-
 class Parser:
     """Parses a single vm file."""
     def __init__(self, lines):
@@ -133,18 +132,24 @@ class CodeWriter:
 
     def write_function(self, function_name, k):
         """Declare a function function_name that has k local variables"""
-        self.file.write('({})\n'.format(function))
+        self.file.write('({})\n'.format(function_name))
         for i in range(len(k)):
             self.write_pushpop('C_PUSH', 'constant', '0')
 
     def write_return(self):
-        # save LCL in R13, which is 'FRAME' in Fig 8.5
+        # save LCL in R15, which is 'FRAME' in Fig 8.5
         self.file.write('@LCL\n'
                         'D=M\n'
-                        '@R13\n' 
+                        '@R15\n' 
                         'M=D\n')
-        # TODO: I think this following line is wrong, I need to push the contents of R13...
-        self.write_pushpop('C_PUSH', 'constant', 'R13') # is this pushing the contents of R13 or R13 itself? :( I need to push the content
+        # push contents of R13 to stack and increment stack pointer
+        self.file.write('@R15\n'
+                        'D=M\n'
+                        '@SP\n'
+                        'A=M\n'
+                        'M=D\n'
+                        '@SP\n'
+                        'M=M+1\n')
         self.write_pushpop('C_PUSH', 'constant', '5')
         self.write_arithmetic('sub')
         # R14 is 'RETURN', set RETURN to *(FRAME-5)
@@ -153,27 +158,44 @@ class CodeWriter:
                         '@R14\n'
                         'M=D\n')
         # TODO: The following line is for *ARG = pop() - I don't quite understand this. Need to review it.
+        # It seems like I need to bring the stack pointer back one before I do the following?
+        self.file.write('@SP\n'
+                        'M=M-1\n')
         self.write_pushpop('C_POP', 'argument', '0')
         # Restore SP, THAT, THIS, ARG, LCL for the caller
         self.file.write('@ARG\n'
                         'D=M+1\n'
                         '@SP\n'
                         'M=D\n'
-                        '@R13\n'
-                        'D=A-1\n'
+                        '@R15\n'
+                        'M=M-1\n'
+                        'A=M\n'
+                        'D=M\n'
                         '@THAT\n'
                         'M=D\n'
+                        '@R15\n'
+                        'M=M-1\n'
+                        'A=M\n'
+                        'D=M\n'
                         '@THIS\n'
-                        'D=D-1\n'
                         'M=D\n'
+                        '@R15\n'
+                        'M=M-1\n'
+                        'A=M\n'
+                        'D=M\n'
                         '@ARG\n'
-                        'D=D-1\n'
                         'M=D\n'
+                        '@R15\n'
+                        'M=M-1\n'
+                        'A=M\n'
+                        'D=M\n'
                         '@LCL\n'
-                        'D=D-1\n'
                         'M=D\n')
-        # GOTO RETURN (R14)
+        # Goto the return address previously saved in R14
+        # This works with the SimpleFunction.tst but it jumps off somewhere far. Will this work correctly
+        # when using the Sys.vm init stuff?
         self.file.write('@R14\n'
+                        'A=M\n'
                         '0;JMP\n')
         
 
@@ -530,17 +552,20 @@ def run(f, filename):
         elif command_type == 'C_PUSH' or command_type == 'C_POP':
             code_writer.write_pushpop(command_type, parser.arg2(), parser.arg3())
         elif command_type == 'C_LABEL':
+            # TODO: Wait, how do I know which function I am in to give it the right label? Need to save that state?
             return NotImplemented
         elif command_type == 'C_GOTO':
-            return NotImplemented
+            # TODO: Same deal here--how do I know to go to function, or label in function? Should be function if I'm in the main?
+            code_writer.write_goto(parser.arg2())
         elif command_type == 'C_IF':
-            return NotImplemented
+            # TODO: Also account for it here.
+            code_writer.write_if(parser.arg2())
         elif command_type == 'C_FUNCTION':
-            return NotImplemented
+            code_writer.write_function(parser.arg2(), parser.arg3())
         elif command_type == 'C_RETURN':
-            return NotImplemented
+            code_writer.write_return()
         elif command_type == 'C_CALL':
-            return NotImplemented
+            code_writer.write_call(parser.arg2(), parser.arg3())
         if not parser.has_more_commands():
             break
         parser.advance()

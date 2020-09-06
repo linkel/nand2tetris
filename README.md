@@ -22,3 +22,4 @@ It's about starting with a NAND-gate and then building the rest of the logical c
     - I got the Basic Test to work, but still need to implement popping of the pointer segment as well as the static segment's push and pop. 
 - Apr 24, 2020: Completed all the segments for Stage II. Nice! Think that means I can go on to Chapter 8!
 - Aug 29, 2020: Refreshing myself on what I did previously, trying to write commands for the function call. 
+- Sep 6, 2020: Got the VM Translator working with SimpleFunction. Still need to handle the init stuff, and correct how I am setting up the function label parts. I think I need to store state on what function I'm in. 

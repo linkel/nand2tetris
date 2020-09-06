@@ -67,3 +67,9 @@ Still not 100% instant knowledge for me when it comes to storing, for example, L
 
 ## *ARG = pop()
 I don't think I completely understand this step. We're popping off the top of the stack into ARG. 
+
+## Bugs
+
+Noticed that I made a mistake restoring the variables for THAT, THIS, ARG, and LCL. Instead I was just stuffing the literal integers into them because I didn't access the memory stored at the location they're pointing to via the `A=M` then `D=M` stuff. Remember, every time you set A equal to M, you're now changing what M was. A and M change together--don't get confused by overloading of what the equals assignment operator means to you in other code. 
+
+I also was jumping to code line 14 via using R14 literally, instead of getting the content that R14 had stored in its memory and jumping to what the content was. 
