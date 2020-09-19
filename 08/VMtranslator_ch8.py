@@ -61,11 +61,12 @@ class CodeWriter:
         self.file = None
         self.filename = None
         self.label_number = 0
+        self.curr_function = None
 
     def set_filename(self, filename: str):
         """Tells CodeWriter that the translation of a new VM file has begun."""
         self.file = open('{}'.format(filename), "w")
-        self.filename = os.path.basename(filename);
+        self.filename = os.path.basename(filename)
 
     def write_init(self):
         # Initialize stack pointer (SP) to 256
@@ -76,9 +77,12 @@ class CodeWriter:
         # TODO: Then call sys.init. Need to implement the function calling process before this.
         # Each translated program has one sys.init.
 
-    def write_label(self, function, label):
+    def write_label(self, label):
         """Write a label belonging to parent function 'function'"""
-        self.file.write('({}${})\n'.format(function, label))
+        if not self.curr_function:
+            print('No current function!')
+            return RuntimeError # No internet right now, what's the right procedure here to throw error?
+        self.file.write('({}${})\n'.format(self.curr_function, label))
 
     def write_goto(self, function, label=None):
         """Write a goto, to either a function, or a label inside a function."""
@@ -97,13 +101,28 @@ class CodeWriter:
                         '@{}${}\n'
                         'D;JNE'.format(function, label))
 
+    def _push_contents_of_address(self, address):
+        self.file.write('@{}\n'
+                        'D=M\n'
+                        '@SP\n'
+                        'A=M\n'
+                        'M=D\n'
+                        '@SP\n'
+                        'M=M+1\n'.format(address))
+
     def write_call(self, function, param_count):
         return_address = self._generate_label()
-        self.write_pushpop('C_PUSH', 'constant', return_address)
-        self.write_pushpop('C_PUSH', 'constant', 'LCL') # TODO: Make sure pushing these named mem locations works
-        self.write_pushpop('C_PUSH', 'constant', 'ARG')
-        self.write_pushpop('C_PUSH', 'constant', 'THIS')
-        self.write_pushpop('C_PUSH', 'constant', 'THAT')
+        self.write_pushpop('C_PUSH', 'constant', return_address) # TODO: is this wrong? 
+        # I think the next four lines are right but entering into this from NestedCall I end up OFF BY ONE. 
+        self._push_contents_of_address('LCL')
+        self._push_contents_of_address('ARG')
+        self._push_contents_of_address('THIS')
+        self._push_contents_of_address('THAT')
+
+        # self.write_pushpop('C_PUSH', 'constant', 'LCL') # TODO: This is WRONG. push the contents not the address
+        # self.write_pushpop('C_PUSH', 'constant', 'ARG')
+        # self.write_pushpop('C_PUSH', 'constant', 'THIS')
+        # self.write_pushpop('C_PUSH', 'constant', 'THAT')
         
         # set ARG to SP - n - 5 where n is param_count
         self.write_pushpop('C_PUSH', 'constant', 'SP')
@@ -128,10 +147,11 @@ class CodeWriter:
         # Doublecheck correctness of this.
         self.write_goto(function)
 
-        self.file.write('{}\n'.format(return_address))
+        self.file.write('({})\n'.format(return_address))
 
     def write_function(self, function_name, k):
         """Declare a function function_name that has k local variables"""
+        self.curr_function = function_name
         self.file.write('({})\n'.format(function_name))
         for i in range(len(k)):
             self.write_pushpop('C_PUSH', 'constant', '0')
@@ -552,13 +572,10 @@ def run(f, filename):
         elif command_type == 'C_PUSH' or command_type == 'C_POP':
             code_writer.write_pushpop(command_type, parser.arg2(), parser.arg3())
         elif command_type == 'C_LABEL':
-            # TODO: Wait, how do I know which function I am in to give it the right label? Need to save that state?
-            return NotImplemented
+            code_writer.write_label(parser.arg2())
         elif command_type == 'C_GOTO':
-            # TODO: Same deal here--how do I know to go to function, or label in function? Should be function if I'm in the main?
             code_writer.write_goto(parser.arg2())
         elif command_type == 'C_IF':
-            # TODO: Also account for it here.
             code_writer.write_if(parser.arg2())
         elif command_type == 'C_FUNCTION':
             code_writer.write_function(parser.arg2(), parser.arg3())
