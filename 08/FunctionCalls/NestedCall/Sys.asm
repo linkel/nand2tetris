@@ -121,7 +121,7 @@ D=M
 @6
 M=D
 (Sys.init$LOOP)
-@LOOP
+@Sys.init$LOOP
 0;JMP
 (Sys.main)
 @0
@@ -468,6 +468,7 @@ M=M+1
 @SP
 M=M-1
 A=M
+A=M
 D=M
 @R14
 M=D
@@ -513,7 +514,6 @@ D=M
 @LCL
 M=D
 @R14
-A=M
 A=M
 0;JMP
 (Sys.add12)
@@ -601,6 +601,7 @@ M=M+1
 @SP
 M=M-1
 A=M
+A=M
 D=M
 @R14
 M=D
@@ -646,6 +647,5 @@ D=M
 @LCL
 M=D
 @R14
-A=M
 A=M
 0;JMP

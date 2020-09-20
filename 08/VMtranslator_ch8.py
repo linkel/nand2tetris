@@ -84,14 +84,14 @@ class CodeWriter:
             return RuntimeError # No internet right now, what's the right procedure here to throw error?
         self.file.write('({}${})\n'.format(self.curr_function, label))
 
-    def write_goto(self, function, label=None):
-        """Write a goto, to either a function, or a label inside a function."""
-        if label:
+    def write_goto(self, label):
+        """Write a goto to a label inside a function."""
+        if self.curr_function:
             self.file.write('@{}${}\n'
-                            '0;JMP\n'.format(function, label))
+                '0;JMP\n'.format(self.curr_function, label))
         else:
             self.file.write('@{}\n'
-                            '0;JMP\n'.format(function))
+                    '0;JMP\n'.format(label))
 
     def write_if(self, function, label):
         self.file.write('@SP\n'
@@ -138,7 +138,8 @@ class CodeWriter:
         # TODO: I need to be able to go to the function, as well as the 
         # if the function has any labels inside of it, to go to its function$label? 
         # Doublecheck correctness of this.
-        self.write_goto(function)
+        self.file.write('@{}\n'
+                        '0;JMP\n'.format(function))
 
         self.file.write('({})\n'.format(return_address))
 
@@ -168,6 +169,7 @@ class CodeWriter:
         # R14 is 'RETURN', set RETURN to *(FRAME-5)
         self.file.write('@SP\n'
                         'M=M-1\n'
+                        'A=M\n'
                         'A=M\n'
                         'D=M\n'
                         '@R14\n'
@@ -213,8 +215,8 @@ class CodeWriter:
         # R14 contains the address on the stack which contains the ROM line number to jump back to. 
         self.file.write('@R14\n'
                         'A=M\n'
-                        'A=M\n'
                         '0;JMP\n')
+        self.curr_function = None
         
 
 
