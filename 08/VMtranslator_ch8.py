@@ -112,31 +112,24 @@ class CodeWriter:
 
     def write_call(self, function, param_count):
         return_address = self._generate_label()
-        self.write_pushpop('C_PUSH', 'constant', return_address) # TODO: is this wrong? 
-        # I think the next four lines are right but entering into this from NestedCall I end up OFF BY ONE. 
+        self.write_pushpop('C_PUSH', 'constant', return_address)
         self._push_contents_of_address('LCL')
         self._push_contents_of_address('ARG')
         self._push_contents_of_address('THIS')
         self._push_contents_of_address('THAT')
 
-        # self.write_pushpop('C_PUSH', 'constant', 'LCL') # TODO: This is WRONG. push the contents not the address
-        # self.write_pushpop('C_PUSH', 'constant', 'ARG')
-        # self.write_pushpop('C_PUSH', 'constant', 'THIS')
-        # self.write_pushpop('C_PUSH', 'constant', 'THAT')
-        
         # set ARG to SP - n - 5 where n is param_count
-        self.write_pushpop('C_PUSH', 'constant', 'SP')
+        self._push_contents_of_address('SP')
         self.write_pushpop('C_PUSH', 'constant', str(param_count))
         self.write_arithmetic('sub')
         self.write_pushpop('C_PUSH', 'constant', '5')
         self.write_arithmetic('sub')
         self.file.write('@SP\n'
+                        'M=M-1\n'
                         'A=M\n'
                         'D=M\n'
                         '@ARG\n'
-                        'M=D\n'
-                        '@SP\n'
-                        'M=M-1\n')
+                        'M=D\n')
         # reposition LCL (local) to SP (where we are now on stack)
         self.file.write('@SP\n'
                         'D=M\n'
@@ -153,7 +146,7 @@ class CodeWriter:
         """Declare a function function_name that has k local variables"""
         self.curr_function = function_name
         self.file.write('({})\n'.format(function_name))
-        for i in range(len(k)):
+        for i in range(int(k)):
             self.write_pushpop('C_PUSH', 'constant', '0')
 
     def write_return(self):
@@ -162,7 +155,7 @@ class CodeWriter:
                         'D=M\n'
                         '@R15\n' 
                         'M=D\n')
-        # push contents of R13 to stack and increment stack pointer
+        # push contents of R15 to stack and increment stack pointer
         self.file.write('@R15\n'
                         'D=M\n'
                         '@SP\n'
@@ -174,13 +167,18 @@ class CodeWriter:
         self.write_arithmetic('sub')
         # R14 is 'RETURN', set RETURN to *(FRAME-5)
         self.file.write('@SP\n'
+                        'M=M-1\n'
+                        'A=M\n'
                         'D=M\n'
                         '@R14\n'
                         'M=D\n')
         # TODO: The following line is for *ARG = pop() - I don't quite understand this. Need to review it.
         # It seems like I need to bring the stack pointer back one before I do the following?
-        self.file.write('@SP\n'
-                        'M=M-1\n')
+        # I did this earlier so that my code worked for SimpleFunction but I'm suspecting that I needed to move it back
+        # earlier here, for the set RETURN to *(FRAME-5) code I added before. I think maybe I now don't need to do it here. 
+
+        # self.file.write('@SP\n'
+        #                 'M=M-1\n')
         self.write_pushpop('C_POP', 'argument', '0')
         # Restore SP, THAT, THIS, ARG, LCL for the caller
         self.file.write('@ARG\n'
@@ -212,9 +210,9 @@ class CodeWriter:
                         '@LCL\n'
                         'M=D\n')
         # Goto the return address previously saved in R14
-        # This works with the SimpleFunction.tst but it jumps off somewhere far. Will this work correctly
-        # when using the Sys.vm init stuff?
+        # R14 contains the address on the stack which contains the ROM line number to jump back to. 
         self.file.write('@R14\n'
+                        'A=M\n'
                         'A=M\n'
                         '0;JMP\n')
         
