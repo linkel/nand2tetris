@@ -444,7 +444,7 @@ class CodeWriter:
                                 'A=M\n'
                                 'M=D\n'
                                 '@SP\n'
-                                'M=M+1\n'.format(self.filename + '.' + index))
+                                'M=M+1\n'.format(self.curr_function + '.' + index))
             else:
                 raise Exception("Segment not matching any of expected")
         elif command == "C_POP":
@@ -537,7 +537,7 @@ class CodeWriter:
                                 'A=M\n'
                                 'D=M\n'
                                 '@{}\n'  # Go to the static segment offset and store within
-                                'M=D\n'.format(self.filename + "." + index))
+                                'M=D\n'.format(self.curr_function + "." + index))
             else:
                 raise Exception("Segment not matching any of expected")
         else:
