@@ -80,3 +80,5 @@ Actually, I discovered that for #1 in the paragraph above, I shouldn't store the
 
 Sep 27 2020
 I wrote up code to compile multiple vm files into one asm file, which my code previously wasn't doing (it was compiling one by one if a directory was specified) and got that working with the bootstrap code. One insidious problem I fixed was that the labels I was generating weren't unique enough if I was doing it by directory--so if I made label01 for a file1 and then label01 for file2 obviously there are problems here with the overlap. Instead I gave the labels the name file1label01 so file2label01 is unique too.
+
+StaticsTest fails, though...Gotta figure this out. 
