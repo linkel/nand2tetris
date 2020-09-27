@@ -65,7 +65,7 @@ class CodeWriter:
 
     def set_filename(self, filename: str):
         """Tells CodeWriter that the translation of a new VM file has begun."""
-        self.file = open('{}'.format(filename), "w")
+        self.file = open('{}'.format(filename), 'a+')
         self.filename = os.path.basename(filename)
 
     def write_init(self):
@@ -74,14 +74,13 @@ class CodeWriter:
                         'D=A\n'
                         '@SP\n'
                         'M=D\n')
-        # TODO: Then call sys.init. Need to implement the function calling process before this.
-        # Each translated program has one sys.init.
+        self.write_call('Sys.init', 0)
 
     def write_label(self, label):
         """Write a label belonging to parent function 'function'"""
         if not self.curr_function:
             print('No current function!')
-            return RuntimeError # No internet right now, what's the right procedure here to throw error?
+            raise RuntimeError
         self.file.write('({}${})\n'.format(self.curr_function, label))
 
     def write_goto(self, label):
@@ -93,13 +92,13 @@ class CodeWriter:
             self.file.write('@{}\n'
                     '0;JMP\n'.format(label))
 
-    def write_if(self, function, label):
+    def write_if(self, label):
         self.file.write('@SP\n'
                         'M=M-1\n'
                         'A=M\n'
                         'D=M\n'
                         '@{}${}\n'
-                        'D;JNE'.format(function, label))
+                        'D;JNE\n'.format(self.curr_function, label))
 
     def _push_contents_of_address(self, address):
         self.file.write('@{}\n'
@@ -145,7 +144,6 @@ class CodeWriter:
 
     def write_function(self, function_name, k):
         """Declare a function function_name that has k local variables"""
-        self.curr_function = function_name
         self.file.write('({})\n'.format(function_name))
         for i in range(int(k)):
             self.write_pushpop('C_PUSH', 'constant', '0')
@@ -216,10 +214,7 @@ class CodeWriter:
         self.file.write('@R14\n'
                         'A=M\n'
                         '0;JMP\n')
-        self.curr_function = None
         
-
-
     def write_arithmetic(self, command: str):
         """Writes the assembly code that is the translation of the arithmetic command."""
         if command == "add":
@@ -555,16 +550,51 @@ class CodeWriter:
     def _generate_label(self) -> str:
         label_number = self.label_number
         self.label_number += 1
-        return 'label' + str(label_number)
+        return 'label' + self.curr_function + str(label_number)
 
 
-def run(f, filename):
+def run_file(f, filename):
     lines = f.readlines()
     lines = [line.partition('//')[0].strip() for line in lines]
     lines = [line for line in lines if line]
     parser = Parser(lines)
     code_writer = CodeWriter()
-    code_writer.set_filename(os.path.splitext(filename)[0] + '.asm')
+    code_writer.set_filename(os.path.splitext(filename)[0])
+    code_writer.curr_function = os.path.splitext(filename)[0]
+    code_writer.write_init()
+    while True:
+        command_type = parser.command_type()
+        if command_type == 'C_ARITHMETIC':
+            code_writer.write_arithmetic(parser.arg1())
+        elif command_type == 'C_PUSH' or command_type == 'C_POP':
+            code_writer.write_pushpop(command_type, parser.arg2(), parser.arg3())
+        elif command_type == 'C_LABEL':
+            code_writer.write_label(parser.arg2())
+        elif command_type == 'C_GOTO':
+            code_writer.write_goto(parser.arg2())
+        elif command_type == 'C_IF':
+            code_writer.write_if(parser.arg2())
+        elif command_type == 'C_FUNCTION':
+            code_writer.write_function(parser.arg2(), parser.arg3())
+        elif command_type == 'C_RETURN':
+            code_writer.write_return()
+        elif command_type == 'C_CALL':
+            code_writer.write_call(parser.arg2(), parser.arg3())
+        if not parser.has_more_commands():
+            break
+        parser.advance()
+
+
+def run_directory(f, filename):
+    lines = f.readlines()
+    lines = [line.partition('//')[0].strip() for line in lines]
+    lines = [line for line in lines if line]
+    parser = Parser(lines)
+    code_writer = CodeWriter()
+    # For a directory, we want to set the filename as the directory and the current function as the filename
+    code_writer.set_filename(os.path.splitext(filename)[0].split('/')[-2] + '.asm')
+    code_writer.curr_function = os.path.splitext(filename)[0].split('/')[-1]
+    code_writer.write_init()
     while True:
         command_type = parser.command_type()
         if command_type == 'C_ARITHMETIC':
@@ -598,8 +628,8 @@ if __name__ == "__main__":
                 if file.endswith('.vm'):
                     filepath = os.path.join(path, file)
                     with open(filepath) as f:
-                        run(f, filepath)
+                        run_directory(f, filepath)
 
     elif os.path.isfile(path) and os.path.splitext(path)[1] == '.vm':
         with open(path) as f:
-            run(f, path)
+            run_file(f, path)
