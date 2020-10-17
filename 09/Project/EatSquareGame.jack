@@ -1,0 +1,67 @@
+class EatSquareGame {
+    field Square square;
+    field int direction;
+    field Array consumables;
+
+    constructor EatSquareGame new() {
+        let square = Square.new(0, 0, 10);
+        let direction = 0;
+        let consumables = Array.new(3);
+        let consumables[0] = Square.new(330, 200, 5);
+        let consumables[1] = Square.new(160, 150, 5);
+        let consumables[2] = Square.new(410, 90, 5);
+        return this;
+    }
+
+    method void dispose() {
+        var int i;
+        var Square temp;
+
+        do square.dispose();
+        let i = 3;
+
+        while (i > 0) {
+            let temp = consumables[i];
+            do temp.dispose();
+            let i = i - 1;
+        }
+        do consumables.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void moveSquare() {
+      if (direction = 1) { do square.moveUp(); }
+      if (direction = 2) { do square.moveDown(); }
+      if (direction = 3) { do square.moveLeft(); }
+      if (direction = 4) { do square.moveRight(); }
+      do Sys.wait(2);
+      return;
+   }
+
+    method void run() {
+      var char key;  // the key currently pressed by the user
+      var boolean exit;
+      let exit = false;
+      
+      while (~exit) {
+         // waits for a key to be pressed
+         while (key = 0) {
+            let key = Keyboard.keyPressed();
+            do moveSquare();
+         }
+         if (key = 81)  { let exit = true; }     // q key
+         if (key = 131) { let direction = 1; }   // up arrow
+         if (key = 133) { let direction = 2; }   // down arrow
+         if (key = 130) { let direction = 3; }   // left arrow
+         if (key = 132) { let direction = 4; }   // right arrow
+
+         // waits for the key to be released
+         while (~(key = 0)) {
+            let key = Keyboard.keyPressed();
+            do moveSquare();
+         }
+     } // while
+     return;
+   }
+}
