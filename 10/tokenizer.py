@@ -1,11 +1,25 @@
 
 import sys
+from enum import Enum 
+
+class TokenType(Enum):
+    keyword = 'keyword'
+    symbol = 'symbol'
+    identifer = 'identifier'
+    int_const = 'int_const'
+    string_const = 'string_const'
+
+symbol_set = { '{', '}', '(', ')', '[', ']', '.', 
+    ',', ';', '+', '*', '/', '&', '|', '<', '>', '='}
+
 
 class JackTokenizer:
     def __init__(self, file):
         self.file = file 
-        self.current_char = NotImplemented
+        # cursor's going to go char by char
+        self.cursor = NotImplemented
         self.current_token = NotImplemented
+        self.token_type = NotImplemented
 
     def has_more_tokens(self):
         """Return True if there are more tokens in this file."""
@@ -24,8 +38,8 @@ class JackTokenizer:
         """Returns the type of the current token: 
         keyword, symbol, identifier, int_const, string_const
         """
-        # conditionals here to categorize the current token
-        return NotImplemented
+        # I'm picturing that "advance" will figure out what the token is too
+        return self.token_type
 
     def keyword(self):
         """When token type is keyword, call this to 
@@ -77,9 +91,13 @@ class JackTokenizer:
         # Can I just replace all double quotes with empty? 
         return self.current_token.replace('"','')
 
+# the f is for reading the file data, the filename will be used to 
+# save the output in the right place with the right name.
 def read_file(f, filename):
-    lines = f.readlines()
-    print(lines)
+    data = f.read()
+    print(data) # if i do data[5] it'll get 6th char which is 'i'
+    # so I think I can go ahead and step through this to syntax analyze...
+    # how to handle "arbitrary number of spaces, newline, and comments" ?
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
