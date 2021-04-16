@@ -14,15 +14,17 @@ symbol_set = { '{', '}', '(', ')', '[', ']', '.',
 
 
 class JackTokenizer:
-    def __init__(self, file):
-        self.file = file 
+    def __init__(self, file_as_string):
+        self.file = file_as_string 
         # cursor's going to go char by char
-        self.cursor = NotImplemented
+        self.cursor = 0
         self.current_token = NotImplemented
         self.token_type = NotImplemented
 
     def has_more_tokens(self):
         """Return True if there are more tokens in this file."""
+        if self.cursor >= len(self.file):
+            return False
         return True 
 
     def advance(self):
@@ -32,7 +34,20 @@ class JackTokenizer:
         # so we don't repeat read any characters
         # and capture that newly grabbed series of chars or char into a token
         # and set self.current_token to that. 
-        self.current_token = NotImplemented
+        token = []
+        # skip through spaces
+        try:
+            while self.file[self.cursor] == ' ':
+                self.cursor += 1
+            while self.file[self.cursor] != ' ':
+                token.append(self.file[self.cursor])
+                self.cursor += 1
+        except IndexError:
+            self.cursor = len(self.file) 
+        
+        token_as_string = ''.join(token)
+        print(token_as_string)
+        self.current_token = token_as_string
 
     def token_type(self):
         """Returns the type of the current token: 
@@ -93,15 +108,40 @@ class JackTokenizer:
 
 # the f is for reading the file data, the filename will be used to 
 # save the output in the right place with the right name.
-def read_file(f, filename):
+def read_file_and_build_xml(f, filename):
     data = f.read()
-    print(data) # if i do data[5] it'll get 6th char which is 'i'
-    # so I think I can go ahead and step through this to syntax analyze...
-    # how to handle "arbitrary number of spaces, newline, and comments" ?
+    tokenizer = JackTokenizer(data)
+    while tokenizer.has_more_tokens:
+        tokenizer.advance()
+        curr_token = tokenizer.current_token
+        if tokenizer.token_type() == TokenType.keyword:
+            keyword = tokenizer.keyword()
+            # do xml stuff into output file 
+        elif tokenizer.token_type() == TokenType.symbol:
+            symbol = tokenizer.symbol()
+            # do xml stuff, print the right ;lgt looking weird html stuff
+        elif tokenizer.token_type() == TokenType.identifier:
+            identifier = tokenizer.identifier()
+            # do xml stuff, identifier is like a variable name 
+        elif tokenizer.token_type() == TokenType.int_const:
+            constant = tokenizer.intVal()
+            # do xml stuff
+        elif tokenizer.token_type() == TokenType.string_const:
+            constant = tokenizer.stringVal()
+            # do xml stuff
+        else:
+            raise TypeError("Token type does not match any existing.")
+
+def test_read_for_testing(f, filename):
+    data = f.read()
+    tokenizer = JackTokenizer(data)
+    while tokenizer.has_more_tokens():
+        tokenizer.advance()
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("usage: tokenizer.py source")
     path = sys.argv[1]
     with open(path) as f:
-        read_file(f, path)
+        # read_file_and_build_xml(f, path)
+        test_read_for_testing(f, path)
