@@ -25,3 +25,4 @@ It's about starting with a NAND-gate and then building the rest of the logical c
 - Sep 6, 2020: Got the VM Translator working with SimpleFunction. Still need to handle the init stuff, and correct how I am setting up the function label parts. I think I need to store state on what function I'm in. 
 - Sep 19, 2020: I think I have the NestedCall working, without the bootstrap code. I have to think about how the bootstrap code works. 
 - Sep 27, 2020: Got the FibonacciElement test working after implementing bootstrap code and compiling multiple vm files into asm file. Verified that NestedCall also works with bootstrap code (last time tested without bootstrap) and just fixed up the code around push and pop of static variables to make StaticsTest work! Hurray! Feels good.
+- Apr 15, 2023: Whoa! Been a long time since I updated this readme. Restarted some effort on the syntax analyzer. I know I touched this a little in 2021 as well, even if I didn't update this timeline.

@@ -1,5 +1,8 @@
 
+import re
 import sys
+from typing import List
+import xml.etree.ElementTree as ET
 from enum import Enum 
 
 class TokenType(Enum):
@@ -16,16 +19,42 @@ symbol_set = { '{', '}', '(', ')', '[', ']', '.',
 class JackTokenizer:
     def __init__(self, file_as_string):
         self.file = file_as_string 
-        # cursor's going to go char by char
+        self.token_list: List[str] = self.process_text(file_as_string)
         self.cursor = 0
         self.current_token = NotImplemented
         self.token_type = NotImplemented
+        print(self.token_list)
 
-    def has_more_tokens(self):
+    def has_more_tokens(self) -> bool:
         """Return True if there are more tokens in this file."""
         if self.cursor >= len(self.file):
             return False
         return True 
+
+    # Four passes, inefficient.
+    def _process_text(self, text: str) -> str:
+        intermediate_tokens = self._remove_comments(text).split()
+        final_tokens: List[str] = []
+        for token in enumerate(intermediate_tokens):
+            s_start = 0
+            c_idx = 0
+            while c_idx < len(token):
+                if token[c_idx] in symbol_set:
+                    final_tokens.append(token[s_start: c_idx])
+                    final_tokens.append(token[c_idx])
+                    c_idx += 1
+                    s_start = c_idx
+                else:
+                    c_idx += 1
+            final_tokens.append(token[s_start:c_idx])
+
+    def _remove_comments(self, text: str) -> str:
+        rgx_list = ['\/\/.*\n', '\/\*(.|\n)*?\*\/']
+        new_text = text
+        for rgx_match in rgx_list:
+            new_text = re.sub(rgx_match, '', new_text)
+            print(new_text)
+        return new_text
 
     def advance(self):
         # get the next token from input and make it the current
@@ -35,7 +64,18 @@ class JackTokenizer:
         # and capture that newly grabbed series of chars or char into a token
         # and set self.current_token to that. 
         token = []
-        # skip through spaces
+        # skip through comments and spaces
+        curr_char = self.file[self.cursor]
+        if (curr_char == "/"):
+            if (self.file[self.cursor + 1] == "/"):
+                self.cursor += 2
+                curr_char = self.file[self.cursor]
+                while curr_char != "\n":
+                    self.cursor += 1
+                    curr_char = self.file[self.cursor]
+                self.cursor += 1
+                    
+
         try:
             while self.file[self.cursor] == ' ':
                 self.cursor += 1
@@ -106,38 +146,50 @@ class JackTokenizer:
         # Can I just replace all double quotes with empty? 
         return self.current_token.replace('"','')
 
-# the f is for reading the file data, the filename will be used to 
-# save the output in the right place with the right name.
 def read_file_and_build_xml(f, filename):
     data = f.read()
     tokenizer = JackTokenizer(data)
-    while tokenizer.has_more_tokens:
+    root = ET.Element("tokens")
+    while tokenizer.has_more_tokens():
         tokenizer.advance()
         curr_token = tokenizer.current_token
         if tokenizer.token_type() == TokenType.keyword:
             keyword = tokenizer.keyword()
-            # do xml stuff into output file 
+            ET.SubElement(root, "keyword").text = curr_token
+
         elif tokenizer.token_type() == TokenType.symbol:
             symbol = tokenizer.symbol()
-            # do xml stuff, print the right ;lgt looking weird html stuff
+            ET.SubElement(root, "symbol").text = curr_token
+
         elif tokenizer.token_type() == TokenType.identifier:
             identifier = tokenizer.identifier()
-            # do xml stuff, identifier is like a variable name 
+            ET.SubElement(root, "identifier").text = curr_token
+
         elif tokenizer.token_type() == TokenType.int_const:
             constant = tokenizer.intVal()
-            # do xml stuff
+            ET.SubElement(root, "integerConstant").text = curr_token
+
         elif tokenizer.token_type() == TokenType.string_const:
             constant = tokenizer.stringVal()
-            # do xml stuff
+            ET.SubElement(root, "stringConstant").text = curr_token
+
         else:
             raise TypeError("Token type does not match any existing.")
+    tree = ET.ElementTree(root)
+    tree.write(f'{filename}_token_output.xml')
+    
 
 def test_read_for_testing(f, filename):
     data = f.read()
     tokenizer = JackTokenizer(data)
-    while tokenizer.has_more_tokens():
-        tokenizer.advance()
+    # while tokenizer.has_more_tokens():
+    #     tokenizer.advance()
 
+# TODO: separate this out into another file
+# JackAnalyzer, the top level driver
+# 1. creates JackTokenizer from the input.jack file
+# 2. create an output file that will contain the xml
+# 3. use CompilationEngine to compile input into the xml
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("usage: tokenizer.py source")
