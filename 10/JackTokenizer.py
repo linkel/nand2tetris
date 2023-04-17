@@ -62,6 +62,7 @@ class JackTokenizer:
         for i, token in enumerate(intermediate_tokens):
             s_start = 0
             c_idx = 0
+            # we have already split based on whitespace so now we "split" based on symbols
             while c_idx < len(token):
                 if token[c_idx] in symbol_set:
                     if token[s_start: c_idx] != '':
@@ -111,10 +112,6 @@ class JackTokenizer:
         var, static, field, let, do, if, else, while, return,
         true, false, null, this
         """
-        # conditionals here to figure out which keyword it is...
-        # I think all of these keywords map the same to their string literal.
-        # Also, how do I want to handle types? Declare a bunch of variables to
-        # strings? 
         return self.current_token
 
     def symbol(self):
@@ -133,13 +130,10 @@ class JackTokenizer:
         """Returns the integer value of the current token.
         Call this when token type is an int_const
         """
-        # cast to int(val) here
-        # does this work for everything?
-        # There's a limit of 0 to 32767 for int_const
-        # but that wouldn't be enforced here
-        # That'd be enforced when determining the token, right?
-        # Like my advance() function above would have an error
-        # if it was a negative number or a number bigger than 32767
+        val = int(self.current_token)
+        if val > 32767 or val < 0:
+            print(f'{val} is out of range of 0 to 32767')
+            raise Exception(f'{val} is out of range of 0 to 32767')
         return int(self.current_token)
 
     def stringVal(self):
