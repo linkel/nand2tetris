@@ -18,10 +18,53 @@ class CompilationEngine:
                     # TODO: No! I actually want to compile_class_var_dec after the bracket {
                     # Look at the grammar and think about it. 
 
+    """If the current token is equal to the input, move the tokenizer along"""
+    def _accept(self, tok, is_identifier = False):
+        curr_type = self.tokenizer.token_type()
+        if curr_type == TokenType.identifier:
+            curr_tok = self.tokenizer.identifier()
+            if is_identifier:
+                self.tokenizer.advance()
+                return True
+            return False
+        elif curr_type == TokenType.keyword:
+            curr_tok = self.tokenizer.keyword()
+            if curr_tok == tok:
+                self.tokenizer.advance()
+                return True
+            return False
+        elif curr_type == TokenType.symbol:
+            curr_tok = self.tokenizer.symbol()
+            if curr_tok == tok:
+                self.tokenizer.advance()
+                return True
+            return False
+        elif curr_type == TokenType.int_const:
+            curr_tok = self.tokenizer.intVal()
+            if curr_tok == tok:
+                self.tokenizer.advance()
+                return True
+            return False
+        elif curr_type == TokenType.string_const:
+            curr_tok = self.tokenizer.stringVal()
+            if curr_tok == tok:
+                self.tokenizer.advance()
+                return True
+            return False
+        else:
+            raise Exception("unknown type found in accept method")
+
+    def _expect(self, tok, is_identifier = False):
+        if (self._accept(tok, is_identifier)):
+            return True
+        raise Exception(f"Expected {tok} but received {self.tokenizer.current_token}")
+    
     def compile_class(self):
         root = ET.Element("class")
         root.text = '\n'
         self.tree = root
+        self._expect("class")
+        self._expect("", True) # lol think of a better way to permit identifiers
 
     '''Compiles a static declaration or a field declaration.'''
     def compile_class_var_dec(self):
