@@ -16,49 +16,34 @@ class CompilationEngine:
         self.filename = outputFilename
 
         self.compile_class()
-        while self.tokenizer.has_more_tokens():
-            self.tokenizer.advance()
-            token_type = self.tokenizer.token_type()
-            if token_type == TokenType.keyword:
-                tok = self.tokenizer.keyword()
-                if tok == 'class' | tok == 'method' | tok == 'function' | tok == 'constructor':
-                    self.compile_class_var_dec()
-                    # TODO: No! I actually want to compile_class_var_dec after the bracket {
-                    # Look at the grammar and think about it. 
 
-    """If the current token is equal to the input, move the tokenizer along"""
-    def _accept(self, tok, is_identifier = False):
-        curr_type = self.tokenizer.token_type()
-        if curr_type == TokenType.identifier:
-            curr_tok = self.tokenizer.identifier()
-            if is_identifier:
+    def _match_specific_or_any_token_of_type(self, curr_tok, curr_type, tok, any_tok_of_type):
+            if any_tok_of_type == curr_type and len(tok) == 0:
+                self.tokenizer.advance()
+                return True
+            elif curr_tok == tok:
                 self.tokenizer.advance()
                 return True
             return False
+    
+    """If the current token is equal to the input, move the tokenizer along"""
+    def _accept(self, tok, any_tok_of_type = None):
+        curr_type = self.tokenizer.token_type()
+        if curr_type == TokenType.identifier: 
+            curr_tok = self.tokenizer.identifier()
+            return self._match_specific_or_any_token_of_type(curr_tok, curr_type, tok, any_tok_of_type)
         elif curr_type == TokenType.keyword:
             curr_tok = self.tokenizer.keyword()
-            if curr_tok == tok:
-                self.tokenizer.advance()
-                return True
-            return False
+            return self._match_specific_or_any_token_of_type(curr_tok, curr_type, tok, any_tok_of_type)
         elif curr_type == TokenType.symbol:
             curr_tok = self.tokenizer.symbol()
-            if curr_tok == tok:
-                self.tokenizer.advance()
-                return True
-            return False
+            return self._match_specific_or_any_token_of_type(curr_tok, curr_type, tok, any_tok_of_type)
         elif curr_type == TokenType.int_const:
             curr_tok = self.tokenizer.intVal()
-            if curr_tok == tok:
-                self.tokenizer.advance()
-                return True
-            return False
+            return self._match_specific_or_any_token_of_type(curr_tok, curr_type, tok, any_tok_of_type)
         elif curr_type == TokenType.string_const:
             curr_tok = self.tokenizer.stringVal()
-            if curr_tok == tok:
-                self.tokenizer.advance()
-                return True
-            return False
+            return self._match_specific_or_any_token_of_type(curr_tok, curr_type, tok, any_tok_of_type)
         else:
             raise Exception("unknown type found in accept method")
 
@@ -71,8 +56,9 @@ class CompilationEngine:
         root = ET.Element("class")
         root.text = '\n'
         self.tree = root
+        self.tokenizer.advance()
         self._expect("class")
-        self._expect("", True) # lol think of a better way to permit identifiers
+        self._expect("", TokenType.identifier)
         self._expect("{")
         while (self.tokenizer.token_type() == TokenType.keyword and (self.tokenizer.keyword() == "static" or self.tokenizer.keyword() == "field")):
             self.compile_class_var_dec()
@@ -86,9 +72,9 @@ class CompilationEngine:
     def compile_class_var_dec(self):
         if self._accept("static") or self._accept("field"):
             self.compile_type()
-            self._expect("", True) # varName
+            self._expect("", TokenType.identifier) # varName
             while self._accept(","):
-                self._expect("", True)
+                self._expect("", TokenType.identifier)
             self._expect(";")
 
 
@@ -97,7 +83,7 @@ class CompilationEngine:
         if self._accept("constructor") or self._accept("method") or self._accept("function"):
             if not self._accept("void"):
                 self.compile_type()
-            self._expect("", True) # subroutineName
+            self._expect("", TokenType.identifier) # subroutineName
             self._expect("(")
             self.compile_parameter_list()
             self._expect(")")
@@ -115,24 +101,24 @@ class CompilationEngine:
             if optional:
                 self._accept("", True)
             else:
-                self._expect("", True)
+                self._expect("", TokenType.identifier)
 
     '''Compiles a parameter list, not including the enclosing ()'''
     def compile_parameter_list(self):
         if self.compile_type(True): # bool to show it's optional
-            self._expect("", True)
+            self._expect("", TokenType.identifier)
             while self._accept(","):
                 self.compile_type()
-                self._expect("", True)
+                self._expect("", TokenType.identifier)
         # else it's an empty param list
 
     '''Compiles a var declaration'''
     def compile_var_dec(self):
         self._expect("var")
         self.compile_type()
-        self._expect("", True)
+        self._expect("", TokenType.identifier)
         while self._accept(","):
-            self._expect("", True)
+            self._expect("", TokenType.identifier)
         self._expect(";")
 
     '''Compiles a sequence of statements, not including the enclosing ()'''
@@ -149,40 +135,104 @@ class CompilationEngine:
             elif self.tokenizer.keyword() == 'return':
                 self.compile_return
 
-    def compile_do(self):
-        self._expect("do")
-        self._expect("", True)
+    def compile_subroutine_call(self):
+        self._expect("", TokenType.identifier)
         if self._accept("("): # go straight to expression list route
             self.compile_expression_list()
             self._expect(")")
         else:
-            self._expect("", True) # foo.bar then expression list route
+            self._expect("", TokenType.identifier) # foo.bar then expression list route
             self._expect(".")
-            self._expect("", True) 
+            self._expect("", TokenType.identifier) 
             self._expect("(")
             self.compile_expression_list()
             self._expect(")")
 
+    def compile_do(self):
+        self._expect("do")
+        self.compile_subroutine_call()
+
     def compile_let(self):
-        NotImplemented
+        self._expect("let")
+        self._expect("", TokenType.identifier)
+        if self._accept("["):
+            self.compile_expression()
+            self._expect("]")
+        self._expect("=")
+        self.compile_expression
+        self._expect(";")
 
     def compile_while(self):
-        NotImplemented
+        self._expect("while")
+        self._expect("(")
+        self.compile_expression()
+        self._expect(")")
+        self._expect("{")
+        self.compile_statements()
+        self._expect("}")
 
     def compile_return(self):
-        NotImplemented
+        self._expect("return")
+        self.compile_expression()
+        self._expect(";")
 
     def compile_if(self):
-        NotImplemented
+        self._expect("if")
+        self._expect("(")
+        self.compile_expression()
+        self._expect(")")
+        self._expect("{")
+        self.compile_statements()
+        self._expect("}")
+        if self._accept("else"):
+            self._expect("{")
+            self.compile_statements()
+            self._expect("}")
 
+    def is_op(keyword):
+        return keyword in {'+', '-', '*', '/', '&', '|', '<', '>', '='}
+    
+    # I think I need a lookahead here according to the textbook.
     def compile_expression(self):
-        NotImplemented
+        self.compile_term()
+        while self.tokenizer.token_type() == TokenType.keyword and self.is_op(self.tokenizer.keyword()):
+            if self._accept('+') or self._accept('-') or self._accept('*') or self._accept('/') or self._accept('&') or self._accept('|') or self._accept('<') or self._accept('>') or self._accept('='):
+                self.compile_term()
+        
 
     def compile_term(self):
-        NotImplemented
+        if (self.tokenizer.token_type() == TokenType.identifier):
+            self.tokenizer.advance() # look ahead
+            # it is a varName [ expression ]
+            if (self.tokenizer.token_type() == TokenType.symbol and self.tokenizer.symbol() == '['):
+                self.tokenizer.retreat()
+                self._expect("", TokenType.identifier)
+                self._expect("[")
+                self.compile_expression()
+                self._expect("]")
+            # it is a subroutineCall
+            elif self.tokenizer.token_type() == TokenType.symbol and self.tokenizer.symbol() == '(':
+                self.tokenizer.retreat()
+                self.compile_subroutine_call()
+            # just a varName
+            else:
+                self.tokenizer.retreat()
+                self._expect("", TokenType.identifier)
+
+        if not (self._accept("", TokenType.int_const) or self._accept("", TokenType.string_const) or self._accept("", TokenType.keyword)):
+            # if it's none of the above then it is a unaryOp term
+            if not self._accept("-"):
+                self._expect("~")
 
     def compile_expression_list(self):
-        NotImplemented
+        self.compile_expression()
+        while self.tokenizer.token_type() == TokenType.symbol and self.tokenizer.symbol() == ',':
+            self._expect(',')
+            self.compile_expression()
+        
+    ## TODO: Unused
+    def is_keyword_constant(self, token):
+        return token in {'true', 'false', 'null', 'this'}
 
     def write(self) -> ET:
         self.tree.write

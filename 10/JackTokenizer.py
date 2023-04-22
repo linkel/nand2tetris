@@ -89,6 +89,11 @@ class JackTokenizer:
         self.cursor += 1
         self.current_token = self.token_list[self.cursor]
 
+    """Can I implement lookahead with this?"""
+    def retreat(self):
+        self.cursor -= 1
+        self.current_token = self.token_list[self.cursor]
+
     def token_type(self):
         """Returns the type of the current token: 
         keyword, symbol, identifier, int_const, string_const
