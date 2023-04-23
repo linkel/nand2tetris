@@ -16,5 +16,7 @@ if __name__ == "__main__":
         tokenizer = JackTokenizer(data)
         # tests correctness of the token generation
         # tree = CompilationEngine(tokenizer, f'{os.path.splitext(path)[0]).read_file_and_build_xml_tokens_only(tokenizer)
-        tree = CompilationEngine(tokenizer, f'{os.path.splitext(path)[0]}_token_output.xml').write()
+        tree = CompilationEngine(
+            tokenizer, f"{os.path.splitext(path)[0]}_output.xml"
+        ).write()
         # tree.write(f'{os.path.splitext(path)[0]}_token_output.xml')

@@ -1,0 +1,32 @@
+<class>
+<keyword> class </keyword>
+<identifier> SquareGame </identifier>
+<symbol> { </symbol>
+<classVarDec><keyword> field </keyword>
+<identifier> Square </identifier>
+<identifier> square </identifier>
+<symbol> ; </symbol>
+<classVarDec><keyword> field </keyword>
+<keyword> int </keyword>
+<identifier> direction </identifier>
+<symbol> ; </symbol>
+<subroutineDec><keyword> constructor </keyword>
+<identifier> SquareGame </identifier>
+<identifier> new </identifier>
+<symbol> ( </symbol>
+<parameterList><symbol> ) </symbol>
+<subroutineBody><symbol> { </symbol>
+<statements><letStatement><keyword> let </keyword>
+<identifier> square </identifier>
+<symbol> = </symbol>
+<expression><term><identifier> Square </identifier>
+<symbol> . </symbol>
+<identifier> new </identifier>
+<symbol> ( </symbol>
+<expressionList><expression><term><int_const> 0 </int_const>
+<symbol> , </symbol>
+<expression><term><int_const> 0 </int_const>
+<symbol> , </symbol>
+<expression><term><int_const> 30 </int_const>
+<symbol> ) </symbol>
+</term></expression></term></expression></term></expression></expressionList></term></expression></letStatement></statements></subroutineBody></parameterList></subroutineDec></classVarDec></classVarDec></class>
