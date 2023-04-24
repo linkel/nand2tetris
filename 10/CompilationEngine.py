@@ -31,9 +31,8 @@ class CompilationEngine:
             return True
         return False
 
-    """If the current token is equal to the input, move the tokenizer along"""
-
     def _accept(self, tok, any_tok_of_type=None):
+        """If the current token is equal to the input, move the tokenizer along"""
         curr_type = self.tokenizer.token_type()
         if curr_type == TokenType.identifier:
             curr_tok = self.tokenizer.identifier()
@@ -94,9 +93,9 @@ class CompilationEngine:
         self._expect("}")
         # TODO Close the xml?
 
-    """Compiles a static declaration or a field declaration."""
-
     def compile_class_var_dec(self):
+        """Compiles a static declaration or a field declaration."""
+        parent = self.node
         el = ET.SubElement(self.node, "classVarDec")
         self.node = el
         if self._accept("static") or self._accept("field"):
@@ -105,10 +104,12 @@ class CompilationEngine:
             while self._accept(","):
                 self._expect("", TokenType.identifier)
             self._expect(";")
-
-    """Compiles a complete method, function, or constructor"""
+        el.tail = "\n"
+        self.node = parent
 
     def compile_subroutine(self):
+        """Compiles a complete method, function, or constructor"""
+        parent = self.node
         el = ET.SubElement(self.node, "subroutineDec")
         self.node = el
         if (
@@ -133,19 +134,20 @@ class CompilationEngine:
                 self.compile_var_dec()
             self.compile_statements()
             self._expect("}")
-
-    """Compiles a type, I added this contract for my own ease"""
+        el.tail = "\n"
+        self.node = parent
 
     def compile_type(self, optional=False):
+        """Compiles a type, I added this contract for my own ease. It should not result in a new XML wrapper node."""
         if not (self._accept("int") or self._accept("char") or self._accept("boolean")):
             if optional:
                 self._accept("", True)
             else:
                 self._expect("", TokenType.identifier)
 
-    """Compiles a parameter list, not including the enclosing ()"""
-
     def compile_parameter_list(self):
+        """Compiles a parameter list, not including the enclosing ()"""
+        parent = self.node
         el = ET.SubElement(self.node, "parameterList")
         self.node = el
         if self.compile_type(True):  # bool to show it's optional
@@ -154,10 +156,12 @@ class CompilationEngine:
                 self.compile_type()
                 self._expect("", TokenType.identifier)
         # else it's an empty param list
-
-    """Compiles a var declaration"""
+        el.tail = "\n"
+        self.node = parent
 
     def compile_var_dec(self):
+        """Compiles a var declaration"""
+        parent = self.node
         el = ET.SubElement(self.node, "varDec")
         self.node = el
         self._expect("var")
@@ -166,10 +170,12 @@ class CompilationEngine:
         while self._accept(","):
             self._expect("", TokenType.identifier)
         self._expect(";")
-
-    """Compiles a sequence of statements, not including the enclosing ()"""
+        el.tail = "\n"
+        self.node = parent
 
     def compile_statements(self):
+        """Compiles a sequence of statements, not including the enclosing ()"""
+        parent = self.node
         el = ET.SubElement(self.node, "statements")
         self.node = el
         while self.tokenizer.token_type() == TokenType.keyword:
@@ -182,9 +188,14 @@ class CompilationEngine:
             elif self.tokenizer.keyword() == "if":
                 self.compile_if()
             elif self.tokenizer.keyword() == "return":
-                self.compile_return
+                self.compile_return()
+            else:
+                break
+        el.tail = "\n"
+        self.node = parent
 
     def compile_subroutine_call(self):
+        """Should not create a new XML wrapper node."""
         self._expect("", TokenType.identifier)
         if self._accept("("):  # go straight to expression list route
             self.compile_expression_list()
@@ -198,12 +209,16 @@ class CompilationEngine:
             self._expect(")")
 
     def compile_do(self):
+        parent = self.node
         el = ET.SubElement(self.node, "doStatement")
         self.node = el
         self._expect("do")
         self.compile_subroutine_call()
+        el.tail = "\n"
+        self.node = parent
 
     def compile_let(self):
+        parent = self.node
         el = ET.SubElement(self.node, "letStatement")
         self.node = el
         self._expect("let")
@@ -214,8 +229,11 @@ class CompilationEngine:
         self._expect("=")
         self.compile_expression()
         self._expect(";")
+        el.tail = "\n"
+        self.node = parent
 
     def compile_while(self):
+        parent = self.node
         el = ET.SubElement(self.node, "whileStatement")
         self.node = el
         self._expect("while")
@@ -225,15 +243,21 @@ class CompilationEngine:
         self._expect("{")
         self.compile_statements()
         self._expect("}")
+        el.tail = "\n"
+        self.node = parent
 
     def compile_return(self):
+        parent = self.node
         el = ET.SubElement(self.node, "returnStatement")
         self.node = el
         self._expect("return")
         self.compile_expression()
         self._expect(";")
+        el.tail = "\n"
+        self.node = parent
 
     def compile_if(self):
+        parent = self.node
         el = ET.SubElement(self.node, "ifStatement")
         self.node = el
         self._expect("if")
@@ -247,17 +271,20 @@ class CompilationEngine:
             self._expect("{")
             self.compile_statements()
             self._expect("}")
+        el.tail = "\n"
+        self.node = parent
 
-    def is_op(keyword):
+    def is_op(self, keyword):
         return keyword in {"+", "-", "*", "/", "&", "|", "<", ">", "="}
 
     # I think I need a lookahead here according to the textbook.
     def compile_expression(self):
+        parent = self.node
         el = ET.SubElement(self.node, "expression")
         self.node = el
         self.compile_term()
-        while self.tokenizer.token_type() == TokenType.keyword and self.is_op(
-            self.tokenizer.keyword()
+        while self.tokenizer.token_type() == TokenType.symbol and self.is_op(
+            self.tokenizer.symbol()
         ):
             if (
                 self._accept("+")
@@ -271,8 +298,11 @@ class CompilationEngine:
                 or self._accept("=")
             ):
                 self.compile_term()
+        el.tail = "\n"
+        self.node = parent
 
     def compile_term(self):
+        parent = self.node
         el = ET.SubElement(self.node, "term")
         self.node = el
         if self.tokenizer.token_type() == TokenType.identifier:
@@ -306,7 +336,7 @@ class CompilationEngine:
                 self.tokenizer.retreat()
                 self._expect("", TokenType.identifier)
 
-        if not (
+        elif not (
             self._accept("", TokenType.int_const)
             or self._accept("", TokenType.string_const)
             or self._accept("", TokenType.keyword)
@@ -314,8 +344,11 @@ class CompilationEngine:
             # if it's none of the above then it is a unaryOp term
             if not self._accept("-"):
                 self._expect("~")
+        el.tail = "\n"
+        self.node = parent
 
     def compile_expression_list(self):
+        parent = self.node
         el = ET.SubElement(self.node, "expressionList")
         self.node = el
         self.compile_expression()
@@ -325,6 +358,9 @@ class CompilationEngine:
         ):
             self._expect(",")
             self.compile_expression()
+
+        el.tail = "\n"
+        self.node = parent
 
     # TODO: Unused
     def is_keyword_constant(self, token):
