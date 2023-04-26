@@ -91,7 +91,7 @@ class CompilationEngine:
         ):
             self.compile_subroutine()
         self._expect("}")
-        # TODO Close the xml?
+        return self.tree
 
     def compile_class_var_dec(self):
         """Compiles a static declaration or a field declaration."""
@@ -214,6 +214,7 @@ class CompilationEngine:
         self.node = el
         self._expect("do")
         self.compile_subroutine_call()
+        self._expect(";")
         el.tail = "\n"
         self.node = parent
 
@@ -251,8 +252,14 @@ class CompilationEngine:
         el = ET.SubElement(self.node, "returnStatement")
         self.node = el
         self._expect("return")
-        self.compile_expression()
-        self._expect(";")
+        if (
+            self.tokenizer.token_type() == TokenType.symbol
+            and self.tokenizer.symbol() == ";"
+        ):
+            self._expect(";")
+        else:
+            self.compile_expression()
+            self._expect(";")
         el.tail = "\n"
         self.node = parent
 
@@ -335,6 +342,14 @@ class CompilationEngine:
             else:
                 self.tokenizer.retreat()
                 self._expect("", TokenType.identifier)
+        # ( expression )
+        elif (
+            self.tokenizer.token_type() == TokenType.symbol
+            and self.tokenizer.symbol() == "("
+        ):
+            self._expect("(")
+            self.compile_expression()
+            self._expect(")")
 
         elif not (
             self._accept("", TokenType.int_const)
@@ -342,8 +357,8 @@ class CompilationEngine:
             or self._accept("", TokenType.keyword)
         ):
             # if it's none of the above then it is a unaryOp term
-            if not self._accept("-"):
-                self._expect("~")
+            if self._accept("-") or self._accept("~"):
+                self.compile_term()
         el.tail = "\n"
         self.node = parent
 
@@ -351,16 +366,22 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "expressionList")
         self.node = el
-        self.compile_expression()
-        while (
+        if (
             self.tokenizer.token_type() == TokenType.symbol
-            and self.tokenizer.symbol() == ","
+            and self.tokenizer.symbol() == ")"
         ):
-            self._expect(",")
+            el.tail = "\n"
+            self.node = parent
+        else:
             self.compile_expression()
-
-        el.tail = "\n"
-        self.node = parent
+            while (
+                self.tokenizer.token_type() == TokenType.symbol
+                and self.tokenizer.symbol() == ","
+            ):
+                self._expect(",")
+                self.compile_expression()
+            el.tail = "\n"
+            self.node = parent
 
     # TODO: Unused
     def is_keyword_constant(self, token):

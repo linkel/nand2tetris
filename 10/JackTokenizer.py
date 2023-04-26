@@ -106,7 +106,8 @@ class JackTokenizer:
 
     def advance(self):
         self.cursor += 1
-        self.current_token = self.token_list[self.cursor]
+        if self.cursor < len(self.token_list):
+            self.current_token = self.token_list[self.cursor]
 
     """Can I implement lookahead with this?"""
 

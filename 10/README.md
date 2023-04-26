@@ -4,6 +4,12 @@ Run by using `python JackAnalyzer.py Square/SquareGame.jack` from within this fo
 
 ## Notes
 
+4/25/2023
+Look at how time flies! Took me 2 years to get around to progressing this. My goodness. 
+It successfully runs through the SquareGame.jack file. My first recursive descent LL(1) syntax analyzer! And I basically wrote it all myself, with the exception of looking at the Wikipedia article. Didn't Google, didn't look at Stack Overflow, didn't look at Github, didn't ask ChatGPT anything. That said, I have been writing a grammar for an LR parser at work, so in these long 2 years I've actually put some work into parser-adjacent stuff. 
+
+Well, I say this with lots of excitement, but I still need to check it against a few more files and also consider improving the indentation so I can easily diff against the provided xml examples. 
+
 4/1/2021
 
 Compiler can be broken into syntax analysis and code generation.
