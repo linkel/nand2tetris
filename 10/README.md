@@ -4,6 +4,18 @@ Run by using `python JackAnalyzer.py Square/SquareGame.jack` from within this fo
 
 ## Notes
 
+11/26/2023
+Okay, this time I used the TextComparer utility and it errored at positions where I didn't make a newline. Now it compares successfully for SquareGame.jack.
+
+`python JackAnalyzer.py Square/SquareGame.jack`
+
+`sh TextComparer.sh ../projects/10/Square/SquareGame.xml ../projects/10/Square/SquareGame_output.xml`
+
+
+Also bruh didn't realize that Fn + Esc swaps Fn key behaviors on this Dell XPS 13. Could have been saving me time over these years... 
+
+I am running into some errors on main.jack. I am not accurately tokenizing something like -j into - (symbol) and j (identifier). My python debug is set up in launch.json. I had to replace the .split() (which failed for string constants with spaces inside) with a regex. 
+
 4/25/2023
 Look at how time flies! Took me 2 years to get around to progressing this. My goodness. 
 It successfully runs through the SquareGame.jack file. My first recursive descent LL(1) syntax analyzer! And I basically wrote it all myself, with the exception of looking at the Wikipedia article. Didn't Google, didn't look at Stack Overflow, didn't look at Github, didn't ask ChatGPT anything. That said, I have been writing a grammar for an LR parser at work, so in these long 2 years I've actually put some work into parser-adjacent stuff. 

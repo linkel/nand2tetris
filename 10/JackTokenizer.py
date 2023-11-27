@@ -2,14 +2,15 @@ import re
 from typing import List
 import xml.etree.ElementTree as ET
 from enum import Enum
+import shlex
 
 
 class TokenType(Enum):
     keyword = "keyword"
     symbol = "symbol"
     identifier = "identifier"
-    int_const = "int_const"
-    string_const = "string_const"
+    int_const = "integerConstant"
+    string_const = "stringConstant"
 
 
 symbol_set = {
@@ -76,7 +77,8 @@ class JackTokenizer:
 
     # Four passes, inefficient.
     def _process_text(self, text: str) -> str:
-        intermediate_tokens = self._remove_comments(text).split()
+        s = self._remove_comments(text)
+        intermediate_tokens = re.findall('(?:".*?"|\S)+', s)
         final_tokens: List[str] = []
         for i, token in enumerate(intermediate_tokens):
             s_start = 0
@@ -128,6 +130,7 @@ class JackTokenizer:
             return (
                 TokenType.string_const
             )  # might want to make sure the string doesn't contain " or \n edge case
+        # also if string constant has spaces inside.
         elif tok[0] in digits_set:
             return TokenType.int_const
         else:

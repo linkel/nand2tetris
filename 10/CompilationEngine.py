@@ -98,6 +98,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "classVarDec")
         self.node = el
+        self.node.text = "\n"
         if self._accept("static") or self._accept("field"):
             self.compile_type()
             self._expect("", TokenType.identifier)  # varName
@@ -111,7 +112,9 @@ class CompilationEngine:
         """Compiles a complete method, function, or constructor"""
         parent = self.node
         el = ET.SubElement(self.node, "subroutineDec")
+        el.tail = "\n"
         self.node = el
+        self.node.text = "\n"
         if (
             self._accept("constructor")
             or self._accept("method")
@@ -127,6 +130,7 @@ class CompilationEngine:
             # subroutine body
             el = ET.SubElement(self.node, "subroutineBody")
             self.node = el
+            self.node.text = "\n"
             self._expect("{")
             while self.tokenizer.token_type() == TokenType.keyword and (
                 self.tokenizer.keyword() == "var"
@@ -150,6 +154,8 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "parameterList")
         self.node = el
+        self.node.text = "\n"
+
         if self.compile_type(True):  # bool to show it's optional
             self._expect("", TokenType.identifier)
             while self._accept(","):
@@ -164,6 +170,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "varDec")
         self.node = el
+        self.node.text = "\n"
         self._expect("var")
         self.compile_type()
         self._expect("", TokenType.identifier)
@@ -178,6 +185,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "statements")
         self.node = el
+        self.node.text = "\n"
         while self.tokenizer.token_type() == TokenType.keyword:
             if self.tokenizer.keyword() == "do":
                 self.compile_do()
@@ -212,6 +220,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "doStatement")
         self.node = el
+        self.node.text = "\n"
         self._expect("do")
         self.compile_subroutine_call()
         self._expect(";")
@@ -222,6 +231,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "letStatement")
         self.node = el
+        self.node.text = "\n"
         self._expect("let")
         self._expect("", TokenType.identifier)
         if self._accept("["):
@@ -237,6 +247,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "whileStatement")
         self.node = el
+        self.node.text = "\n"
         self._expect("while")
         self._expect("(")
         self.compile_expression()
@@ -251,6 +262,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "returnStatement")
         self.node = el
+        self.node.text = "\n"
         self._expect("return")
         if (
             self.tokenizer.token_type() == TokenType.symbol
@@ -267,6 +279,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "ifStatement")
         self.node = el
+        self.node.text = "\n"
         self._expect("if")
         self._expect("(")
         self.compile_expression()
@@ -289,6 +302,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "expression")
         self.node = el
+        self.node.text = "\n"
         self.compile_term()
         while self.tokenizer.token_type() == TokenType.symbol and self.is_op(
             self.tokenizer.symbol()
@@ -312,6 +326,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "term")
         self.node = el
+        self.node.text = "\n"
         if self.tokenizer.token_type() == TokenType.identifier:
             self.tokenizer.advance()  # look ahead
             # it is a varName [ expression ]
@@ -366,6 +381,7 @@ class CompilationEngine:
         parent = self.node
         el = ET.SubElement(self.node, "expressionList")
         self.node = el
+        self.node.text = "\n"
         if (
             self.tokenizer.token_type() == TokenType.symbol
             and self.tokenizer.symbol() == ")"

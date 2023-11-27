@@ -2,39 +2,55 @@
 <keyword> class </keyword>
 <identifier> SquareGame </identifier>
 <symbol> { </symbol>
-<classVarDec><keyword> field </keyword>
+<classVarDec>
+<keyword> field </keyword>
 <identifier> Square </identifier>
 <identifier> square </identifier>
 <symbol> ; </symbol>
 </classVarDec>
-<classVarDec><keyword> field </keyword>
+<classVarDec>
+<keyword> field </keyword>
 <keyword> int </keyword>
 <identifier> direction </identifier>
 <symbol> ; </symbol>
 </classVarDec>
-<subroutineDec><keyword> constructor </keyword>
+<subroutineDec>
+<keyword> constructor </keyword>
 <identifier> SquareGame </identifier>
 <identifier> new </identifier>
 <symbol> ( </symbol>
-<parameterList />
+<parameterList>
+</parameterList>
 <symbol> ) </symbol>
-<subroutineBody><symbol> { </symbol>
-<statements><letStatement><keyword> let </keyword>
+<subroutineBody>
+<symbol> { </symbol>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> square </identifier>
 <symbol> = </symbol>
-<expression><term><identifier> Square </identifier>
+<expression>
+<term>
+<identifier> Square </identifier>
 <symbol> . </symbol>
 <identifier> new </identifier>
 <symbol> ( </symbol>
-<expressionList><expression><term><int_const> 0 </int_const>
+<expressionList>
+<expression>
+<term>
+<integerConstant> 0 </integerConstant>
 </term>
 </expression>
 <symbol> , </symbol>
-<expression><term><int_const> 0 </int_const>
+<expression>
+<term>
+<integerConstant> 0 </integerConstant>
 </term>
 </expression>
 <symbol> , </symbol>
-<expression><term><int_const> 30 </int_const>
+<expression>
+<term>
+<integerConstant> 30 </integerConstant>
 </term>
 </expression>
 </expressionList>
@@ -43,16 +59,22 @@
 </expression>
 <symbol> ; </symbol>
 </letStatement>
-<letStatement><keyword> let </keyword>
+<letStatement>
+<keyword> let </keyword>
 <identifier> direction </identifier>
 <symbol> = </symbol>
-<expression><term><int_const> 0 </int_const>
+<expression>
+<term>
+<integerConstant> 0 </integerConstant>
 </term>
 </expression>
 <symbol> ; </symbol>
 </letStatement>
-<returnStatement><keyword> return </keyword>
-<expression><term><keyword> this </keyword>
+<returnStatement>
+<keyword> return </keyword>
+<expression>
+<term>
+<keyword> this </keyword>
 </term>
 </expression>
 <symbol> ; </symbol>
@@ -60,234 +82,318 @@
 </statements>
 <symbol> } </symbol>
 </subroutineBody>
-</subroutineDec><subroutineDec><keyword> method </keyword>
+</subroutineDec>
+<subroutineDec>
+<keyword> method </keyword>
 <keyword> void </keyword>
 <identifier> dispose </identifier>
 <symbol> ( </symbol>
-<parameterList />
+<parameterList>
+</parameterList>
 <symbol> ) </symbol>
-<subroutineBody><symbol> { </symbol>
-<statements><doStatement><keyword> do </keyword>
+<subroutineBody>
+<symbol> { </symbol>
+<statements>
+<doStatement>
+<keyword> do </keyword>
 <identifier> square </identifier>
 <symbol> . </symbol>
 <identifier> dispose </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
-<doStatement><keyword> do </keyword>
+<doStatement>
+<keyword> do </keyword>
 <identifier> Memory </identifier>
 <symbol> . </symbol>
 <identifier> deAlloc </identifier>
 <symbol> ( </symbol>
-<expressionList><expression><term><keyword> this </keyword>
+<expressionList>
+<expression>
+<term>
+<keyword> this </keyword>
 </term>
 </expression>
 </expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
-<returnStatement><keyword> return </keyword>
+<returnStatement>
+<keyword> return </keyword>
 <symbol> ; </symbol>
 </returnStatement>
 </statements>
 <symbol> } </symbol>
 </subroutineBody>
-</subroutineDec><subroutineDec><keyword> method </keyword>
+</subroutineDec>
+<subroutineDec>
+<keyword> method </keyword>
 <keyword> void </keyword>
 <identifier> moveSquare </identifier>
 <symbol> ( </symbol>
-<parameterList />
+<parameterList>
+</parameterList>
 <symbol> ) </symbol>
-<subroutineBody><symbol> { </symbol>
-<statements><ifStatement><keyword> if </keyword>
+<subroutineBody>
+<symbol> { </symbol>
+<statements>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> direction </identifier>
+<expression>
+<term>
+<identifier> direction </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 1 </int_const>
+<term>
+<integerConstant> 1 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><doStatement><keyword> do </keyword>
+<statements>
+<doStatement>
+<keyword> do </keyword>
 <identifier> square </identifier>
 <symbol> . </symbol>
 <identifier> moveUp </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> direction </identifier>
+<expression>
+<term>
+<identifier> direction </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 2 </int_const>
+<term>
+<integerConstant> 2 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><doStatement><keyword> do </keyword>
+<statements>
+<doStatement>
+<keyword> do </keyword>
 <identifier> square </identifier>
 <symbol> . </symbol>
 <identifier> moveDown </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> direction </identifier>
+<expression>
+<term>
+<identifier> direction </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 3 </int_const>
+<term>
+<integerConstant> 3 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><doStatement><keyword> do </keyword>
+<statements>
+<doStatement>
+<keyword> do </keyword>
 <identifier> square </identifier>
 <symbol> . </symbol>
 <identifier> moveLeft </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> direction </identifier>
+<expression>
+<term>
+<identifier> direction </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 4 </int_const>
+<term>
+<integerConstant> 4 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><doStatement><keyword> do </keyword>
+<statements>
+<doStatement>
+<keyword> do </keyword>
 <identifier> square </identifier>
 <symbol> . </symbol>
 <identifier> moveRight </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<doStatement><keyword> do </keyword>
+<doStatement>
+<keyword> do </keyword>
 <identifier> Sys </identifier>
 <symbol> . </symbol>
 <identifier> wait </identifier>
 <symbol> ( </symbol>
-<expressionList><expression><term><int_const> 5 </int_const>
+<expressionList>
+<expression>
+<term>
+<integerConstant> 5 </integerConstant>
 </term>
 </expression>
 </expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
-<returnStatement><keyword> return </keyword>
+<returnStatement>
+<keyword> return </keyword>
 <symbol> ; </symbol>
 </returnStatement>
 </statements>
 <symbol> } </symbol>
 </subroutineBody>
-</subroutineDec><subroutineDec><keyword> method </keyword>
+</subroutineDec>
+<subroutineDec>
+<keyword> method </keyword>
 <keyword> void </keyword>
 <identifier> run </identifier>
 <symbol> ( </symbol>
-<parameterList />
+<parameterList>
+</parameterList>
 <symbol> ) </symbol>
-<subroutineBody><symbol> { </symbol>
-<varDec><keyword> var </keyword>
+<subroutineBody>
+<symbol> { </symbol>
+<varDec>
+<keyword> var </keyword>
 <keyword> char </keyword>
 <identifier> key </identifier>
 <symbol> ; </symbol>
 </varDec>
-<varDec><keyword> var </keyword>
+<varDec>
+<keyword> var </keyword>
 <keyword> boolean </keyword>
 <identifier> exit </identifier>
 <symbol> ; </symbol>
 </varDec>
-<statements><letStatement><keyword> let </keyword>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> exit </identifier>
 <symbol> = </symbol>
-<expression><term><keyword> false </keyword>
+<expression>
+<term>
+<keyword> false </keyword>
 </term>
 </expression>
 <symbol> ; </symbol>
 </letStatement>
-<whileStatement><keyword> while </keyword>
+<whileStatement>
+<keyword> while </keyword>
 <symbol> ( </symbol>
-<expression><term><symbol> ~ </symbol>
-<term><identifier> exit </identifier>
+<expression>
+<term>
+<symbol> ~ </symbol>
+<term>
+<identifier> exit </identifier>
 </term>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><whileStatement><keyword> while </keyword>
+<statements>
+<whileStatement>
+<keyword> while </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 0 </int_const>
+<term>
+<integerConstant> 0 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><letStatement><keyword> let </keyword>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> key </identifier>
 <symbol> = </symbol>
-<expression><term><identifier> Keyboard </identifier>
+<expression>
+<term>
+<identifier> Keyboard </identifier>
 <symbol> . </symbol>
 <identifier> keyPressed </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 </term>
 </expression>
 <symbol> ; </symbol>
 </letStatement>
-<doStatement><keyword> do </keyword>
+<doStatement>
+<keyword> do </keyword>
 <identifier> moveSquare </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
 </statements>
 <symbol> } </symbol>
 </whileStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 81 </int_const>
+<term>
+<integerConstant> 81 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><letStatement><keyword> let </keyword>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> exit </identifier>
 <symbol> = </symbol>
-<expression><term><keyword> true </keyword>
+<expression>
+<term>
+<keyword> true </keyword>
 </term>
 </expression>
 <symbol> ; </symbol>
@@ -295,64 +401,86 @@
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 90 </int_const>
+<term>
+<integerConstant> 90 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><doStatement><keyword> do </keyword>
+<statements>
+<doStatement>
+<keyword> do </keyword>
 <identifier> square </identifier>
 <symbol> . </symbol>
 <identifier> decSize </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 88 </int_const>
+<term>
+<integerConstant> 88 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><doStatement><keyword> do </keyword>
+<statements>
+<doStatement>
+<keyword> do </keyword>
 <identifier> square </identifier>
 <symbol> . </symbol>
 <identifier> incSize </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 131 </int_const>
+<term>
+<integerConstant> 131 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><letStatement><keyword> let </keyword>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> direction </identifier>
 <symbol> = </symbol>
-<expression><term><int_const> 1 </int_const>
+<expression>
+<term>
+<integerConstant> 1 </integerConstant>
 </term>
 </expression>
 <symbol> ; </symbol>
@@ -360,20 +488,28 @@
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 133 </int_const>
+<term>
+<integerConstant> 133 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><letStatement><keyword> let </keyword>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> direction </identifier>
 <symbol> = </symbol>
-<expression><term><int_const> 2 </int_const>
+<expression>
+<term>
+<integerConstant> 2 </integerConstant>
 </term>
 </expression>
 <symbol> ; </symbol>
@@ -381,20 +517,28 @@
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 130 </int_const>
+<term>
+<integerConstant> 130 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><letStatement><keyword> let </keyword>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> direction </identifier>
 <symbol> = </symbol>
-<expression><term><int_const> 3 </int_const>
+<expression>
+<term>
+<integerConstant> 3 </integerConstant>
 </term>
 </expression>
 <symbol> ; </symbol>
@@ -402,20 +546,28 @@
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<ifStatement><keyword> if </keyword>
+<ifStatement>
+<keyword> if </keyword>
 <symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 132 </int_const>
+<term>
+<integerConstant> 132 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><letStatement><keyword> let </keyword>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> direction </identifier>
 <symbol> = </symbol>
-<expression><term><int_const> 4 </int_const>
+<expression>
+<term>
+<integerConstant> 4 </integerConstant>
 </term>
 </expression>
 <symbol> ; </symbol>
@@ -423,14 +575,21 @@
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<whileStatement><keyword> while </keyword>
+<whileStatement>
+<keyword> while </keyword>
 <symbol> ( </symbol>
-<expression><term><symbol> ~ </symbol>
-<term><symbol> ( </symbol>
-<expression><term><identifier> key </identifier>
+<expression>
+<term>
+<symbol> ~ </symbol>
+<term>
+<symbol> ( </symbol>
+<expression>
+<term>
+<identifier> key </identifier>
 </term>
 <symbol> = </symbol>
-<term><int_const> 0 </int_const>
+<term>
+<integerConstant> 0 </integerConstant>
 </term>
 </expression>
 <symbol> ) </symbol>
@@ -439,23 +598,30 @@
 </expression>
 <symbol> ) </symbol>
 <symbol> { </symbol>
-<statements><letStatement><keyword> let </keyword>
+<statements>
+<letStatement>
+<keyword> let </keyword>
 <identifier> key </identifier>
 <symbol> = </symbol>
-<expression><term><identifier> Keyboard </identifier>
+<expression>
+<term>
+<identifier> Keyboard </identifier>
 <symbol> . </symbol>
 <identifier> keyPressed </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 </term>
 </expression>
 <symbol> ; </symbol>
 </letStatement>
-<doStatement><keyword> do </keyword>
+<doStatement>
+<keyword> do </keyword>
 <identifier> moveSquare </identifier>
 <symbol> ( </symbol>
-<expressionList />
+<expressionList>
+</expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
@@ -465,11 +631,13 @@
 </statements>
 <symbol> } </symbol>
 </whileStatement>
-<returnStatement><keyword> return </keyword>
+<returnStatement>
+<keyword> return </keyword>
 <symbol> ; </symbol>
 </returnStatement>
 </statements>
 <symbol> } </symbol>
 </subroutineBody>
-</subroutineDec><symbol> } </symbol>
+</subroutineDec>
+<symbol> } </symbol>
 </class>
