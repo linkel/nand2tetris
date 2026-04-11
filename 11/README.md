@@ -12,7 +12,7 @@ Compile time vs runtime for constructors--the physical addresses of the objects 
 
 Copied the CompilationEngine.py, JackAnalyzer.py, and JackTokenizer.py from chapter 10.
 
-The first big of this says to build the SymbolTable. Whenever an identifier is seen in the src code, currently the syntax analyzer outputs an XML line. Now I will change it to output "name", "category" (field/static/var/arg/class/subroutine), "index" (the index of the identifier if field/static/var/arg), and "usage" (whether it is declared, or whether it is used).
+The first bit of this says to build the SymbolTable. Whenever an identifier is seen in the src code, currently the syntax analyzer outputs an XML line. Now I will change it to output "name", "category" (field/static/var/arg/class/subroutine), "index" (the index of the identifier if field/static/var/arg), and "usage" (whether it is declared, or whether it is used).
 
 # Symbol Table: Test
 

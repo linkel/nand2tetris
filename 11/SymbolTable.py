@@ -16,7 +16,7 @@ class SymbolTable:
     def add_to_dict_or_counter(self, name, dic: dict, counter: int = None):
         if name in dic:
             raise ValueError("Already exists!")
-        if counter:
+        if counter is not None:
             dic[name] = counter
             prev_counter = counter
             counter += 1
@@ -32,11 +32,11 @@ class SymbolTable:
         elif category == Category.var:
             self.add_to_dict_or_counter(name, self.vars, self.vars_counter)
         elif category == Category.arg:
-            self.add_to_dict_or_counter(name, self.vars, self.vars_counter)
+            self.add_to_dict_or_counter(name, self.args, self.vars_counter)
         elif category == Category.aclass:
-            self.add_to_dict_or_counter(name, self.vars)
+            self.add_to_dict_or_counter(name, self.classes_or_subroutines)
         elif category == Category.subroutine:
-            self.add_to_dict_or_counter(name, self.vars)
+            self.add_to_dict_or_counter(name, self.classes_or_subroutines)
         else:
             raise ValueError("Category not found")
 
