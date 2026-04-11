@@ -11,3 +11,7 @@ class Dog:
 
 
 uh my compile subroutine call, should that be Usage.used when it hasn't even been declared?? 
+
+Seems like I have to consider how I am looking up these variables. 
+
+Like if I get to a let variable = 4; statement I don't know what scope it's in. I should check from more local to less local. 
