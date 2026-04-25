@@ -18,6 +18,10 @@ The first bit of this says to build the SymbolTable. Whenever an identifier is s
 
 `python JackAnalyzer.py Square/SquareGame.jack`
 
+(on MacOS use python3)
+
 and see if you manage to populate the name, category, index, usage, for the first part of the Symbol Table.
 
 Wait, when I compile a subroutine and I try to get classes or subroutines, those don't exist yet in the dictionary because they're declared in another file! Am I supposed to hold off on those, or maybe not add them to a dict? Think about this.
+
+Compilation Engine and Symbol Table here in chapter 11 do have coupling! Syntax analysis was independent and the XML could be validated but now I will have to look up stuff in the symbol tables in the engine to determine the right move sometimes. 

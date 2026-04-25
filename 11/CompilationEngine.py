@@ -245,6 +245,7 @@ class CompilationEngine:
                 self.tokenizer.token_type() == TokenType.symbol
                 and self.tokenizer.symbol() == "."
             ):
+                # the stuff after the dot can be a variable (square.move) OR a classname (square.new). 
                 self.tokenizer.retreat()
                 self._expect("", TokenType.identifier, Category.aclass, Usage.used)
                 self._expect(".")
