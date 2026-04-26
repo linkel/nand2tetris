@@ -30,8 +30,6 @@ class SymbolTable:
             s += ", "
             s += str(v)
             s += "\n"
-
-
         return s
     
     def add_identifier(self, name: str, category: Category):
@@ -40,9 +38,11 @@ class SymbolTable:
             raise ValueError(f"{name} already exists for {category}")
         if category == Category.aclass or category == Category.subroutine:
             table[name] = -1 # why am I recording this again for class or subroutine? 
+            return table[name]
         else:
             table[name] = self.counters[category]
             self.counters[category] += 1
+            return table[name]
 
 # static - scope class
 # field - scope class
@@ -55,7 +55,9 @@ class SymbolTable:
     def get_index(self, name: str, category: Category):
         try: 
             if category == Category.subroutine or category == Category.aclass:
-                return self.tables[category][name]
+                # return self.tables[category][name]
+                # no index for subroutine or class?
+                return 0
 
             if name in self.tables[Category.var]:
                 return self.tables[Category.var][name]
@@ -72,3 +74,14 @@ class SymbolTable:
             print(f"name: {name}, category: {category}")
             raise
             
+    def get_is_variable_and_category(self, name: str):
+        if name in self.tables[Category.var]:
+            return (True, Category.var)
+        elif name in self.tables[Category.arg]:
+            return (True, Category.arg)
+        elif name in self.tables[Category.static]:
+            return (True, Category.static)
+        elif name in self.tables[Category.field]:
+            return (True, Category.field)
+        else:
+            return (False, None)

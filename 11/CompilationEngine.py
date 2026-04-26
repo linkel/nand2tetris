@@ -40,6 +40,9 @@ class CompilationEngine:
     ):
         """If the current token is equal to the input, move the tokenizer along"""
         curr_type = self.tokenizer.token_type()
+        # TODO: also output the identifier category, 
+        # whether the identifier is being defined or used 
+        # running index assigned to the identifier 
         if curr_type == TokenType.identifier:
             curr_tok = self.tokenizer.identifier()
             if usage == Usage.declared:
@@ -47,15 +50,17 @@ class CompilationEngine:
             elif usage == Usage.used:
                 index = self.symbolTable.get_index(curr_tok, category)
             self.node.set("name", curr_tok)
-            self.node.set("category", category)
+            if category:
+                self.node.set("category", category.name)
             if (
                 category == Category.field
                 or category == Category.field
                 or category == Category.static
                 or category == Category.arg
             ):
-                self.node.set("index", index)
-            self.node.set("usage", usage)
+                self.node.set("index", str(index))
+            if usage:
+                self.node.set("usage", usage.name)
             return self._match_specific_or_any_token_of_type(
                 curr_tok, curr_type, tok, any_tok_of_type
             )
@@ -245,9 +250,14 @@ class CompilationEngine:
                 self.tokenizer.token_type() == TokenType.symbol
                 and self.tokenizer.symbol() == "."
             ):
-                # the stuff after the dot can be a variable (square.move) OR a classname (square.new). 
+                # TODO: the stuff before the dot can be a variable (square.move) OR a classname (Square.new). 
                 self.tokenizer.retreat()
-                self._expect("", TokenType.identifier, Category.aclass, Usage.used)
+                name = self.tokenizer.current_token
+                is_variable, category = self.symbolTable.get_is_variable_and_category(name)
+                if is_variable:
+                    self._expect("", TokenType.identifier, category, Usage.used)
+                else:
+                    self._expect("", TokenType.identifier, Category.aclass, Usage.used)
                 self._expect(".")
                 self._expect("", TokenType.identifier, Category.subroutine, Usage.used)
                 self._expect("(")
@@ -444,7 +454,9 @@ class CompilationEngine:
 
     def write(self) -> ET:
         self.tree.write
+        print(f"test {self.filename}")
         self.tree.write(self.filename)
+        
 
     def read_file_and_build_xml_tokens_only(self, tokenizer) -> ET:
         root = ET.Element("tokens")
@@ -462,7 +474,6 @@ class CompilationEngine:
                 sub_el = ET.SubElement(root, "symbol")
                 sub_el.text = f" {tok} "
                 sub_el.tail = "\n"
-
             elif tokenizer.token_type() == TokenType.identifier:
                 identifier = tokenizer.identifier()
                 sub_el = ET.SubElement(root, "identifier")
