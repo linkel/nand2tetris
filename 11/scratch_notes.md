@@ -20,3 +20,9 @@ Like if I get to a let variable = 4; statement I don't know what scope it's in. 
 ### subroutine
 
 So a subroutine is like Square.new() <--  the fn call bit ? 
+
+
+### function vs method 
+
+function is standalone
+method is tied to a class 

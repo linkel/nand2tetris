@@ -25,11 +25,11 @@ class Command(Enum):
 
 class VMWriter:
     def __init__(self, filename):
-        with open(filename, 'w') as f:
-            pass 
+        self.filename = filename
+        self.f = open(filename, 'w')
 
     def write_push(self, segment: Segment, index: int):
-        pass
+        self.f.write(f'push {segment} {index}\n')
 
     def write_pop(self, segment: Segment, index: int):
         pass
@@ -56,5 +56,4 @@ class VMWriter:
         pass 
 
     def close(self):
-        # not sure I need this if I just keep appending to the file with 'x' 
-        pass
+        self.f.close()

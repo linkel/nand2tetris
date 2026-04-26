@@ -40,9 +40,6 @@ class CompilationEngine:
     ):
         """If the current token is equal to the input, move the tokenizer along"""
         curr_type = self.tokenizer.token_type()
-        # TODO: also output the identifier category, 
-        # whether the identifier is being defined or used 
-        # running index assigned to the identifier 
         if curr_type == TokenType.identifier:
             curr_tok = self.tokenizer.identifier()
             if usage == Usage.declared:
