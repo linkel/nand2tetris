@@ -8,12 +8,15 @@ class SymbolTable:
             Category.static: {},
             Category.var: {},
             Category.arg: {},
+            # don't need to keep the following. 
             Category.aclass: {},
             Category.subroutine: {}
         }
         self.counters = {
+            # class
             Category.field: 0,
             Category.static: 0,
+            # subroutine (when a new subroutine is started, we clear?)
             Category.var: 0,
             Category.arg: 0,
         }
@@ -32,6 +35,13 @@ class SymbolTable:
             s += "\n"
         return s
     
+    def start_subroutine(self):
+        self.tables[Category.var] = {}
+        self.tables[Category.arg] = {}
+        self.counters[Category.var] = 0
+        self.counters[Category.arg] = 0
+        return 
+    
     def add_identifier(self, name: str, category: Category):
         table = self.tables[category]
         if name in table:
@@ -41,6 +51,7 @@ class SymbolTable:
             return table[name]
         else:
             table[name] = self.counters[category]
+            # Q: is it necessary to keep running idx for each separate category?
             self.counters[category] += 1
             return table[name]
 

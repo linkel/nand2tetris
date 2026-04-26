@@ -7,11 +7,13 @@ from SymbolTable import SymbolTable
 # JackAnalyzer, the top level driver
 # 1. creates JackTokenizer from the input.jack file
 # 2. create an output file that will contain the xml (technically being done by CompilationEngine here, TODO?)
-# 3. use CompilationEngine to compile input into the xml
+# 3. use CompilationEngine to compile input into the xml (for testing that the tokenizer and symbol table did it right)
+# 4. use CompilationEngine to write to a VMWriter (for VM code)
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("usage: JackAnalyzer.py source")
     path = sys.argv[1]
+    # TODO: this only covers a single file. If source is a directory we need to compile every .jack file in it into a .vm file.
     with open(path) as f:
         data = f.read()
         tokenizer = JackTokenizer(data)
