@@ -3,25 +3,25 @@ from enum import Enum
 
 
 class Segment(Enum):
-    CONST = "CONST"
-    ARG = "ARG"
-    LOCAL = "LOCAL"
-    STATIC = "STATIC"
-    THIS = "THIS"
-    THAT = "THAT"
-    POINTER = "POINTER"
-    TEMP = "TEMP"
+    CONST = "const"
+    ARG = "arg"
+    LOCAL = "local"
+    STATIC = "static"
+    THIS = "this"
+    THAT = "that"
+    POINTER = "pointer"
+    TEMP = "temp"
 
 class Command(Enum):
-    ADD = "ADD"
-    SUB = "SUB"
-    NEG = "NEG"
-    EQ = "EQ"
-    GT = "GT"
-    LT = "LT"
-    AND = "AND"
-    OR = "OR"
-    NOT = "NOT"
+    ADD = "add"
+    SUB = "sub"
+    NEG = "neg"
+    EQ = "eq"
+    GT = "gt"
+    LT = "lt"
+    AND = "and"
+    OR = "or"
+    NOT = "not"
 
 class VMWriter:
     def __init__(self, filename):
@@ -32,28 +32,28 @@ class VMWriter:
         self.f.write(f'push {segment} {index}\n')
 
     def write_pop(self, segment: Segment, index: int):
-        pass
+        self.f.write(f'pop {segment} {index}\n')
 
     def write_arithmetic(self, command: Command):
-        pass
+        self.f.write(f'{command}\n')
 
     def write_label(self, label: str):
-        pass
+        self.f.write(f'label {label}\n')
 
     def write_goto(self, label: str):
-        pass
+        self.f.write(f'goto {label}\n')
 
     def write_if(self, label: str):
-        pass
+        self.f.write(f'if-goto {label}\n')
 
     def write_call(self, name: str, nargs: int):
-        pass
+        self.f.write(f'call {name} {nargs}\n')
     
     def write_function(self, name: str, nlocals: int):
-        pass
+        self.f.write(f'function {name} {nlocals}\n')
 
     def write_return(self):
-        pass 
+        self.f.write(f'return\n')
 
     def close(self):
         self.f.close()

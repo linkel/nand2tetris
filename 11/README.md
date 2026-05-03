@@ -53,3 +53,29 @@ then finally I also hit:
 TypeError: cannot serialize 0 (type int)
 ```
 This is because I was writing index which was an int. And needed to cast it. 
+
+# VM Writer
+I added in some of the methods for the VM writer but am thinking my code for the symbol table and putting info on the identifiers has a bug, the outputted XML shows index and stuff on letStatement but I think it should be on the identifier variable? 
+
+I saved the class name and the subroutine name, and gathered the number of arguments it takes, but what I am not confident about is the functions vs methods vs constructors, what you're supposed to do for the implicit this and setting it. I can't remember the earlier VM language chapter super well, I have to go back and look at the spec. 
+
+Verify the following:
+```
+        if self.vm_writer:
+            qualified_name = f"{self.current_class_name}.{self.current_subroutine_name}"
+            nlocals = self.symbolTable.counters[Category.var]
+            self.vm_writer.write_function(qualified_name, nlocals)
+            if self.current_subroutine_kind == "method":
+                self.vm_writer.write_push(Segment.ARG, 0)
+                self.vm_writer.write_pop(Segment.POINTER, 0)
+
+            if self.current_subroutine_kind == "constructor":
+                nfields = self.symbolTable.counters[Category.field]
+                self.vm_writer.write_push(Segment.CONST, nfields)
+                self.vm_writer.write_call("Memory.alloc", 1)
+                self.vm_writer.write_pop(Segment.POINTER, 0)
+```
+
+And then in the SquareGame_output.xml for the xml tree, it puts the index and stuff in on the letStatement but I think it actually needs to be on the identifier... It might not matter since I am doing the VM writing and that's the real part. But maybe could have more bugs. 
+
+At least I can see I am generating a .vm file now. Down the line it also needs to handle multiple files and JackAnalyzer needs to be able to take a path. 

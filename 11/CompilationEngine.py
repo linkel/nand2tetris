@@ -2,19 +2,23 @@ import os
 import xml.etree.ElementTree as ET
 from JackTokenizer import Category, JackTokenizer, TokenType, Usage
 from SymbolTable import SymbolTable
-
+from VMWriter import Segment, VMWriter
 statement_keywords = {"let", "do", "if", "while", "return"}
 
 
 class CompilationEngine:
     def __init__(
-        self, tokenizer: JackTokenizer, outputFilename, symbolTable: SymbolTable
+        self, tokenizer: JackTokenizer, outputFilename, symbolTable: SymbolTable, vm_writer: VMWriter
     ):
         self.tree = None
         self.node = None
         self.tokenizer = tokenizer
         self.symbolTable = symbolTable
         self.filename = outputFilename
+        self.vm_writer = vm_writer
+        self.current_subroutine_kind = None
+        self.current_subroutine_name = None
+        self.current_class_name = None 
 
         self.compile_class()
 
@@ -51,7 +55,7 @@ class CompilationEngine:
                 self.node.set("category", category.name)
             if (
                 category == Category.field
-                or category == Category.field
+                or category == Category.var
                 or category == Category.static
                 or category == Category.arg
             ):
@@ -99,6 +103,7 @@ class CompilationEngine:
         self.node = root_node
         self.tokenizer.advance()
         self._expect("class")
+        self.current_class_name = self.tokenizer.identifier()
         self._expect("", TokenType.identifier, Category.aclass, Usage.declared)
         self._expect("{")
         while self.tokenizer.token_type() == TokenType.keyword and (
@@ -139,31 +144,52 @@ class CompilationEngine:
         el.tail = "\n"
         self.node = el
         self.node.text = "\n"
-        if (
-            self._accept("constructor")
-            or self._accept("method")
-            or self._accept("function")
-        ):
-            if not self._accept("void"):
-                self.compile_type()
-            self._expect(
-                "", TokenType.identifier, Category.subroutine, Usage.declared
-            )  # subroutineName
-            self._expect("(")
-            self.compile_parameter_list()
-            self._expect(")")
+        if (self._accept("constructor")):
+            self.current_subroutine_kind = "constructor"
+        elif (self._accept("method")):
+            self.current_subroutine_kind = "method"
+        elif (self._accept("function")):
+            self.current_subroutine_kind = "function"
 
-            # subroutine body
-            el = ET.SubElement(self.node, "subroutineBody")
-            self.node = el
-            self.node.text = "\n"
-            self._expect("{")
-            while self.tokenizer.token_type() == TokenType.keyword and (
-                self.tokenizer.keyword() == "var"
-            ):
-                self.compile_var_dec()
-            self.compile_statements()
-            self._expect("}")
+        if not self._accept("void"):
+            self.compile_type()
+        
+        # get subroutine name before we consume it in the expect next line
+        self.current_subroutine_name = self.tokenizer.identifier()
+
+        self._expect(
+            "", TokenType.identifier, Category.subroutine, Usage.declared
+        )  # subroutineName
+        self._expect("(")
+        self.compile_parameter_list()
+        self._expect(")")
+
+        # subroutine body
+        el = ET.SubElement(self.node, "subroutineBody")
+        self.node = el
+        self.node.text = "\n"
+        self._expect("{")
+        while self.tokenizer.token_type() == TokenType.keyword and (
+            self.tokenizer.keyword() == "var"
+        ):
+            self.compile_var_dec()
+
+        if self.vm_writer:
+            qualified_name = f"{self.current_class_name}.{self.current_subroutine_name}"
+            nlocals = self.symbolTable.counters[Category.var]
+            self.vm_writer.write_function(qualified_name, nlocals)
+            if self.current_subroutine_kind == "method":
+                self.vm_writer.write_push(Segment.ARG, 0)
+                self.vm_writer.write_pop(Segment.POINTER, 0)
+
+            if self.current_subroutine_kind == "constructor":
+                nfields = self.symbolTable.counters[Category.field]
+                self.vm_writer.write_push(Segment.CONST, nfields)
+                self.vm_writer.write_call("Memory.alloc", 1)
+                self.vm_writer.write_pop(Segment.POINTER, 0)
+
+        self.compile_statements()
+        self._expect("}")
         el.tail = "\n"
         self.node = parent
 

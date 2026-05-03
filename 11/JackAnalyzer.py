@@ -3,6 +3,7 @@ import os
 from JackTokenizer import JackTokenizer
 from CompilationEngine import CompilationEngine
 from SymbolTable import SymbolTable
+from VMWriter import VMWriter
 
 # JackAnalyzer, the top level driver
 # 1. creates JackTokenizer from the input.jack file
@@ -19,8 +20,10 @@ if __name__ == "__main__":
         tokenizer = JackTokenizer(data)
         # tests correctness of the token generation
         # tree = CompilationEngine(tokenizer, f'{os.path.splitext(path)[0]).read_file_and_build_xml_tokens_only(tokenizer)
+        vm_writer = VMWriter(f"{os.path.splitext(path)[0]}.vm")
         symbolTable = SymbolTable()
         tree = CompilationEngine(
-            tokenizer, f"{os.path.splitext(path)[0]}_output.xml", symbolTable
+            tokenizer, f"{os.path.splitext(path)[0]}_output.xml", symbolTable, vm_writer
         ).write()
+        vm_writer.close()
         # tree.write(f'{os.path.splitext(path)[0]}_token_output.xml')
