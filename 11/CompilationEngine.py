@@ -204,7 +204,8 @@ class CompilationEngine:
             if optional:
                 self._accept("", True)
             else:
-                self._expect("", TokenType.identifier)
+                # will it always be a class here?
+                self._expect("", TokenType.identifier, Category.aclass, Usage.used) 
 
     def compile_parameter_list(self):
         """Compiles a parameter list, not including the enclosing ()"""
@@ -412,7 +413,11 @@ class CompilationEngine:
                 and self.tokenizer.symbol() == "["
             ):
                 self.tokenizer.retreat()
-                self._expect("", TokenType.identifier, Category.var, Usage.used)
+                is_variable, category = self.symbolTable.get_is_variable_and_category(name)
+                if is_variable:
+                    self._expect("", TokenType.identifier, category, Usage.used)
+                else:
+                    self._expect("", TokenType.identifier, Category.aclass, Usage.used)
                 self._expect("[")
                 self.compile_expression()
                 self._expect("]")

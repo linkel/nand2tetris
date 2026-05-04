@@ -4,7 +4,7 @@
 <symbol> { </symbol>
 <classVarDec>
 <keyword> field </keyword>
-<identifier name="Square"> Square </identifier>
+<identifier name="Square" category="aclass" usage="used"> Square </identifier>
 <identifier name="square" category="static" index="0" usage="declared"> square </identifier>
 <symbol> ; </symbol>
 </classVarDec>
@@ -16,7 +16,7 @@
 </classVarDec>
 <subroutineDec>
 <keyword> constructor </keyword>
-<identifier name="SquareGame"> SquareGame </identifier>
+<identifier name="SquareGame" category="aclass" usage="used"> SquareGame </identifier>
 <identifier name="new" category="subroutine" usage="declared"> new </identifier>
 <symbol> ( </symbol>
 <parameterList>
