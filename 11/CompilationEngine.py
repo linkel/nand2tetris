@@ -23,19 +23,23 @@ class CompilationEngine:
         self.compile_class()
 
     def _match_specific_or_any_token_of_type(
-        self, curr_tok, curr_type: TokenType, tok, any_tok_of_type: TokenType
+        self, curr_tok, curr_type: TokenType, tok, any_tok_of_type: TokenType, values_to_set: list[tuple[str, str]]
     ):
         if any_tok_of_type == curr_type and len(tok) == 0:
             self.tokenizer.advance()
             el = ET.SubElement(self.node, curr_type.value)
             el.text = f" {curr_tok} "
             el.tail = "\n"
+            for i in range(len(values_to_set)):
+                el.set(values_to_set[i][0], values_to_set[i][1])
             return True
         elif curr_tok == tok:
             self.tokenizer.advance()
             el = ET.SubElement(self.node, curr_type.value)
             el.text = f" {curr_tok} "
             el.tail = "\n"
+            for i in range(len(values_to_set)):
+                el.set(values_to_set[i][0], values_to_set[i][1])
             return True
         return False
 
@@ -46,44 +50,45 @@ class CompilationEngine:
         curr_type = self.tokenizer.token_type()
         if curr_type == TokenType.identifier:
             curr_tok = self.tokenizer.identifier()
+            values_to_set = []
             if usage == Usage.declared:
                 index = self.symbolTable.add_identifier(curr_tok, category)
             elif usage == Usage.used:
                 index = self.symbolTable.get_index(curr_tok, category)
-            self.node.set("name", curr_tok)
+            values_to_set.append(("name", curr_tok))
             if category:
-                self.node.set("category", category.name)
+                values_to_set.append(("category", category.name))
             if (
                 category == Category.field
                 or category == Category.var
                 or category == Category.static
                 or category == Category.arg
             ):
-                self.node.set("index", str(index))
+                values_to_set.append(("index", str(index)))
             if usage:
-                self.node.set("usage", usage.name)
+                values_to_set.append(("usage", usage.name))
             return self._match_specific_or_any_token_of_type(
-                curr_tok, curr_type, tok, any_tok_of_type
+                curr_tok, curr_type, tok, any_tok_of_type, values_to_set
             )
         elif curr_type == TokenType.keyword:
             curr_tok = self.tokenizer.keyword()
             return self._match_specific_or_any_token_of_type(
-                curr_tok, curr_type, tok, any_tok_of_type
+                curr_tok, curr_type, tok, any_tok_of_type, []
             )
         elif curr_type == TokenType.symbol:
             curr_tok = self.tokenizer.symbol()
             return self._match_specific_or_any_token_of_type(
-                curr_tok, curr_type, tok, any_tok_of_type
+                curr_tok, curr_type, tok, any_tok_of_type, []
             )
         elif curr_type == TokenType.int_const:
             curr_tok = self.tokenizer.intVal()
             return self._match_specific_or_any_token_of_type(
-                curr_tok, curr_type, tok, any_tok_of_type
+                curr_tok, curr_type, tok, any_tok_of_type, []
             )
         elif curr_type == TokenType.string_const:
             curr_tok = self.tokenizer.stringVal()
             return self._match_specific_or_any_token_of_type(
-                curr_tok, curr_type, tok, any_tok_of_type
+                curr_tok, curr_type, tok, any_tok_of_type, []
             )
         else:
             raise Exception("unknown type found in accept method")

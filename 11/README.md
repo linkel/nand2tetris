@@ -79,3 +79,8 @@ Verify the following:
 And then in the SquareGame_output.xml for the xml tree, it puts the index and stuff in on the letStatement but I think it actually needs to be on the identifier... It might not matter since I am doing the VM writing and that's the real part. But maybe could have more bugs. 
 
 At least I can see I am generating a .vm file now. Down the line it also needs to handle multiple files and JackAnalyzer needs to be able to take a path. 
+
+# VM Writer - re-fixing an xml issue
+
+I did go and fix up the xml identifiers not having usage info. I still see some identifiers without them but it is better than it was where it was being put on the parent element of the identifier. My call sites are all crazy now since I did a jank fix to save the state in that array and pass it in, with the empty array being passed in for the ones that don't need any state to be saved onto the node... eugh. 
+

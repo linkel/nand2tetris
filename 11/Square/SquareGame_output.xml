@@ -1,23 +1,23 @@
-<class name="SquareGame" category="aclass" usage="declared">
+<class>
 <keyword> class </keyword>
-<identifier> SquareGame </identifier>
+<identifier name="SquareGame" category="aclass" usage="declared"> SquareGame </identifier>
 <symbol> { </symbol>
-<classVarDec name="square" category="static" index="0" usage="declared">
+<classVarDec>
 <keyword> field </keyword>
-<identifier> Square </identifier>
-<identifier> square </identifier>
+<identifier name="Square"> Square </identifier>
+<identifier name="square" category="static" index="0" usage="declared"> square </identifier>
 <symbol> ; </symbol>
 </classVarDec>
-<classVarDec name="direction" category="static" index="1" usage="declared">
+<classVarDec>
 <keyword> field </keyword>
 <keyword> int </keyword>
-<identifier> direction </identifier>
+<identifier name="direction" category="static" index="1" usage="declared"> direction </identifier>
 <symbol> ; </symbol>
 </classVarDec>
-<subroutineDec name="new" category="subroutine" usage="declared">
+<subroutineDec>
 <keyword> constructor </keyword>
-<identifier> SquareGame </identifier>
-<identifier> new </identifier>
+<identifier name="SquareGame"> SquareGame </identifier>
+<identifier name="new" category="subroutine" usage="declared"> new </identifier>
 <symbol> ( </symbol>
 <parameterList>
 </parameterList>
@@ -25,15 +25,15 @@
 <subroutineBody>
 <symbol> { </symbol>
 <statements>
-<letStatement name="square" category="var" index="0" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> square </identifier>
+<identifier name="square" category="var" index="0" usage="used"> square </identifier>
 <symbol> = </symbol>
 <expression>
-<term name="new" category="subroutine" usage="used">
-<identifier> Square </identifier>
+<term>
+<identifier name="Square" category="aclass" usage="used"> Square </identifier>
 <symbol> . </symbol>
-<identifier> new </identifier>
+<identifier name="new" category="subroutine" usage="used"> new </identifier>
 <symbol> ( </symbol>
 <expressionList>
 <expression>
@@ -59,9 +59,9 @@
 </expression>
 <symbol> ; </symbol>
 </letStatement>
-<letStatement name="direction" category="var" index="1" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> direction </identifier>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 <symbol> = </symbol>
 <expression>
 <term>
@@ -83,10 +83,10 @@
 <symbol> } </symbol>
 </subroutineBody>
 </subroutineDec>
-<subroutineDec name="dispose" category="subroutine" usage="declared">
+<subroutineDec>
 <keyword> method </keyword>
 <keyword> void </keyword>
-<identifier> dispose </identifier>
+<identifier name="dispose" category="subroutine" usage="declared"> dispose </identifier>
 <symbol> ( </symbol>
 <parameterList>
 </parameterList>
@@ -94,22 +94,22 @@
 <subroutineBody>
 <symbol> { </symbol>
 <statements>
-<doStatement name="dispose" category="subroutine" index="0" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> square </identifier>
+<identifier name="square" category="static" index="0" usage="used"> square </identifier>
 <symbol> . </symbol>
-<identifier> dispose </identifier>
+<identifier name="dispose" category="subroutine" usage="used"> dispose </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
 <symbol> ) </symbol>
 <symbol> ; </symbol>
 </doStatement>
-<doStatement name="deAlloc" category="subroutine" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> Memory </identifier>
+<identifier name="Memory" category="aclass" usage="used"> Memory </identifier>
 <symbol> . </symbol>
-<identifier> deAlloc </identifier>
+<identifier name="deAlloc" category="subroutine" usage="used"> deAlloc </identifier>
 <symbol> ( </symbol>
 <expressionList>
 <expression>
@@ -129,10 +129,10 @@
 <symbol> } </symbol>
 </subroutineBody>
 </subroutineDec>
-<subroutineDec name="moveSquare" category="subroutine" usage="declared">
+<subroutineDec>
 <keyword> method </keyword>
 <keyword> void </keyword>
-<identifier> moveSquare </identifier>
+<identifier name="moveSquare" category="subroutine" usage="declared"> moveSquare </identifier>
 <symbol> ( </symbol>
 <parameterList>
 </parameterList>
@@ -144,8 +144,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="direction" category="var" index="1" usage="used">
-<identifier> direction </identifier>
+<term>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -155,11 +155,11 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<doStatement name="moveUp" category="subroutine" index="0" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> square </identifier>
+<identifier name="square" category="static" index="0" usage="used"> square </identifier>
 <symbol> . </symbol>
-<identifier> moveUp </identifier>
+<identifier name="moveUp" category="subroutine" usage="used"> moveUp </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -173,8 +173,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="direction" category="var" index="1" usage="used">
-<identifier> direction </identifier>
+<term>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -184,11 +184,11 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<doStatement name="moveDown" category="subroutine" index="0" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> square </identifier>
+<identifier name="square" category="static" index="0" usage="used"> square </identifier>
 <symbol> . </symbol>
-<identifier> moveDown </identifier>
+<identifier name="moveDown" category="subroutine" usage="used"> moveDown </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -202,8 +202,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="direction" category="var" index="1" usage="used">
-<identifier> direction </identifier>
+<term>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -213,11 +213,11 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<doStatement name="moveLeft" category="subroutine" index="0" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> square </identifier>
+<identifier name="square" category="static" index="0" usage="used"> square </identifier>
 <symbol> . </symbol>
-<identifier> moveLeft </identifier>
+<identifier name="moveLeft" category="subroutine" usage="used"> moveLeft </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -231,8 +231,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="direction" category="var" index="1" usage="used">
-<identifier> direction </identifier>
+<term>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -242,11 +242,11 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<doStatement name="moveRight" category="subroutine" index="0" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> square </identifier>
+<identifier name="square" category="static" index="0" usage="used"> square </identifier>
 <symbol> . </symbol>
-<identifier> moveRight </identifier>
+<identifier name="moveRight" category="subroutine" usage="used"> moveRight </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -256,11 +256,11 @@
 </statements>
 <symbol> } </symbol>
 </ifStatement>
-<doStatement name="wait" category="subroutine" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> Sys </identifier>
+<identifier name="Sys" category="aclass" usage="used"> Sys </identifier>
 <symbol> . </symbol>
-<identifier> wait </identifier>
+<identifier name="wait" category="subroutine" usage="used"> wait </identifier>
 <symbol> ( </symbol>
 <expressionList>
 <expression>
@@ -280,32 +280,32 @@
 <symbol> } </symbol>
 </subroutineBody>
 </subroutineDec>
-<subroutineDec name="run" category="subroutine" usage="declared">
+<subroutineDec>
 <keyword> method </keyword>
 <keyword> void </keyword>
-<identifier> run </identifier>
+<identifier name="run" category="subroutine" usage="declared"> run </identifier>
 <symbol> ( </symbol>
 <parameterList>
 </parameterList>
 <symbol> ) </symbol>
 <subroutineBody>
 <symbol> { </symbol>
-<varDec name="key" category="var" index="0" usage="declared">
+<varDec>
 <keyword> var </keyword>
 <keyword> char </keyword>
-<identifier> key </identifier>
+<identifier name="key" category="var" index="0" usage="declared"> key </identifier>
 <symbol> ; </symbol>
 </varDec>
-<varDec name="exit" category="var" index="1" usage="declared">
+<varDec>
 <keyword> var </keyword>
 <keyword> boolean </keyword>
-<identifier> exit </identifier>
+<identifier name="exit" category="var" index="1" usage="declared"> exit </identifier>
 <symbol> ; </symbol>
 </varDec>
 <statements>
-<letStatement name="exit" category="var" index="1" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> exit </identifier>
+<identifier name="exit" category="var" index="1" usage="used"> exit </identifier>
 <symbol> = </symbol>
 <expression>
 <term>
@@ -320,8 +320,8 @@
 <expression>
 <term>
 <symbol> ~ </symbol>
-<term name="exit" category="var" index="1" usage="used">
-<identifier> exit </identifier>
+<term>
+<identifier name="exit" category="var" index="1" usage="used"> exit </identifier>
 </term>
 </term>
 </expression>
@@ -332,8 +332,8 @@
 <keyword> while </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -343,15 +343,15 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<letStatement name="key" category="var" index="0" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> key </identifier>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 <symbol> = </symbol>
 <expression>
-<term name="keyPressed" category="subroutine" usage="used">
-<identifier> Keyboard </identifier>
+<term>
+<identifier name="Keyboard" category="aclass" usage="used"> Keyboard </identifier>
 <symbol> . </symbol>
-<identifier> keyPressed </identifier>
+<identifier name="keyPressed" category="subroutine" usage="used"> keyPressed </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -360,9 +360,9 @@
 </expression>
 <symbol> ; </symbol>
 </letStatement>
-<doStatement name="moveSquare" category="subroutine" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> moveSquare </identifier>
+<identifier name="moveSquare" category="subroutine" usage="used"> moveSquare </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -376,8 +376,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -387,9 +387,9 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<letStatement name="exit" category="var" index="1" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> exit </identifier>
+<identifier name="exit" category="var" index="1" usage="used"> exit </identifier>
 <symbol> = </symbol>
 <expression>
 <term>
@@ -405,8 +405,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -416,11 +416,11 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<doStatement name="decSize" category="subroutine" index="0" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> square </identifier>
+<identifier name="square" category="static" index="0" usage="used"> square </identifier>
 <symbol> . </symbol>
-<identifier> decSize </identifier>
+<identifier name="decSize" category="subroutine" usage="used"> decSize </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -434,8 +434,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -445,11 +445,11 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<doStatement name="incSize" category="subroutine" index="0" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> square </identifier>
+<identifier name="square" category="static" index="0" usage="used"> square </identifier>
 <symbol> . </symbol>
-<identifier> incSize </identifier>
+<identifier name="incSize" category="subroutine" usage="used"> incSize </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -463,8 +463,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -474,9 +474,9 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<letStatement name="direction" category="var" index="1" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> direction </identifier>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 <symbol> = </symbol>
 <expression>
 <term>
@@ -492,8 +492,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -503,9 +503,9 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<letStatement name="direction" category="var" index="1" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> direction </identifier>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 <symbol> = </symbol>
 <expression>
 <term>
@@ -521,8 +521,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -532,9 +532,9 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<letStatement name="direction" category="var" index="1" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> direction </identifier>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 <symbol> = </symbol>
 <expression>
 <term>
@@ -550,8 +550,8 @@
 <keyword> if </keyword>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -561,9 +561,9 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<letStatement name="direction" category="var" index="1" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> direction </identifier>
+<identifier name="direction" category="var" index="1" usage="used"> direction </identifier>
 <symbol> = </symbol>
 <expression>
 <term>
@@ -584,8 +584,8 @@
 <term>
 <symbol> ( </symbol>
 <expression>
-<term name="key" category="var" index="0" usage="used">
-<identifier> key </identifier>
+<term>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 </term>
 <symbol> = </symbol>
 <term>
@@ -599,15 +599,15 @@
 <symbol> ) </symbol>
 <symbol> { </symbol>
 <statements>
-<letStatement name="key" category="var" index="0" usage="used">
+<letStatement>
 <keyword> let </keyword>
-<identifier> key </identifier>
+<identifier name="key" category="var" index="0" usage="used"> key </identifier>
 <symbol> = </symbol>
 <expression>
-<term name="keyPressed" category="subroutine" usage="used">
-<identifier> Keyboard </identifier>
+<term>
+<identifier name="Keyboard" category="aclass" usage="used"> Keyboard </identifier>
 <symbol> . </symbol>
-<identifier> keyPressed </identifier>
+<identifier name="keyPressed" category="subroutine" usage="used"> keyPressed </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
@@ -616,9 +616,9 @@
 </expression>
 <symbol> ; </symbol>
 </letStatement>
-<doStatement name="moveSquare" category="subroutine" usage="used">
+<doStatement>
 <keyword> do </keyword>
-<identifier> moveSquare </identifier>
+<identifier name="moveSquare" category="subroutine" usage="used"> moveSquare </identifier>
 <symbol> ( </symbol>
 <expressionList>
 </expressionList>
